@@ -12,6 +12,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
 
 
 /**
@@ -20,10 +23,11 @@ import java.util.logging.Logger;
  */
 public class Simeav {
 
-    File imagenOriginal;
     
-    Object setImagenOriginal(File selectedFile) {
-        imagenOriginal = selectedFile;
+    Mat imagenOriginal;
+    
+    Mat setImagenOriginal(File selectedFile) {
+        imagenOriginal = Highgui.imread(selectedFile.getAbsolutePath());
         return imagenOriginal;
     }
 
@@ -39,7 +43,7 @@ public class Simeav {
         }
     }
 
-    File getImagenOriginal() {
+    Mat getImagenOriginal() {
         return imagenOriginal;
     }
 

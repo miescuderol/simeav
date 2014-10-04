@@ -6,10 +6,23 @@
 
 package simeav;
 
+import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.highgui.Highgui;
 
 /**
  *
@@ -34,11 +47,13 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private void initComponents() {
 
         jSplitPane2 = new javax.swing.JSplitPane();
-        panelVisualizador = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         rootArbolResultados = new DefaultMutableTreeNode("Root");
         arbolResultados = new javax.swing.JTree(rootArbolResultados);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        panelVisualizador = new javax.swing.JPanel();
+        imagen = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuItemAbrir = new javax.swing.JMenuItem();
@@ -47,19 +62,6 @@ public class InterfazGrafica extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout panelVisualizadorLayout = new javax.swing.GroupLayout(panelVisualizador);
-        panelVisualizador.setLayout(panelVisualizadorLayout);
-        panelVisualizadorLayout.setHorizontalGroup(
-            panelVisualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 772, Short.MAX_VALUE)
-        );
-        panelVisualizadorLayout.setVerticalGroup(
-            panelVisualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
-        );
-
-        jSplitPane2.setRightComponent(panelVisualizador);
 
         jScrollPane2.setViewportView(arbolResultados);
 
@@ -75,6 +77,27 @@ public class InterfazGrafica extends javax.swing.JFrame {
         );
 
         jSplitPane2.setLeftComponent(jPanel2);
+
+        imagen.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        imagen.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        imagen.setDoubleBuffered(true);
+
+        javax.swing.GroupLayout panelVisualizadorLayout = new javax.swing.GroupLayout(panelVisualizador);
+        panelVisualizador.setLayout(panelVisualizadorLayout);
+        panelVisualizadorLayout.setHorizontalGroup(
+            panelVisualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelVisualizadorLayout.createSequentialGroup()
+                .addComponent(imagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 759, Short.MAX_VALUE))
+        );
+        panelVisualizadorLayout.setVerticalGroup(
+            panelVisualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(imagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(panelVisualizador);
+
+        jSplitPane2.setRightComponent(jScrollPane1);
 
         jMenu1.setText("Archivo");
 
@@ -121,7 +144,8 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private void menuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemAbrirActionPerformed
         int returnVal = selectorArchivos.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-           modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
+           Mat im = modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
+           mostrar(im);
            rootArbolResultados.add(arImagenOriginal);
         }
     }//GEN-LAST:event_menuItemAbrirActionPerformed
@@ -153,7 +177,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(InterfazGrafica.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new InterfazGrafica().setVisible(true);
@@ -163,10 +187,12 @@ public class InterfazGrafica extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private DefaultMutableTreeNode rootArbolResultados;
     private javax.swing.JTree arbolResultados;
+    private javax.swing.JLabel imagen;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JMenuItem menuItemAbrir;
@@ -179,4 +205,17 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private DefaultMutableTreeNode arResultado;
     private JFileChooser selectorArchivos = new JFileChooser();
     private Simeav modelo = new Simeav();
+
+    private void mostrar(Mat im) {
+        MatOfByte matOfByte = new MatOfByte();
+        Highgui.imencode(".jpg", im, matOfByte); 
+        byte[] byteArray = matOfByte.toArray();
+        try {
+            InputStream in = new ByteArrayInputStream(byteArray);
+            BufferedImage bufImage = ImageIO.read(in);
+            ImageIcon image = new ImageIcon(bufImage);
+            imagen.setIcon(image);
+        } catch (IOException e) {
+        }
+    }
 }
