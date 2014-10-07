@@ -144,7 +144,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private void menuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemAbrirActionPerformed
         int returnVal = selectorArchivos.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-           Mat im = modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
+           Mat im;
+           modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
+           im = modelo.getImagenCuadrados();
            mostrar(im);
            rootArbolResultados.add(arImagenOriginal);
         }
