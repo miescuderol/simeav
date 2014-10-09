@@ -51,6 +51,10 @@ public class InterfazGrafica extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         rootArbolResultados = new DefaultMutableTreeNode("Root");
         arbolResultados = new javax.swing.JTree(rootArbolResultados);
+        botonBinaria = new javax.swing.JButton();
+        botonCuadrados = new javax.swing.JButton();
+        botonLineas = new javax.swing.JButton();
+        textoTH = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         panelVisualizador = new javax.swing.JPanel();
         imagen = new javax.swing.JLabel();
@@ -65,15 +69,56 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(arbolResultados);
 
+        botonBinaria.setText("Binaria");
+        botonBinaria.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonBinariaMouseClicked(evt);
+            }
+        });
+
+        botonCuadrados.setText("Cuadrados");
+        botonCuadrados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonCuadradosMouseClicked(evt);
+            }
+        });
+
+        botonLineas.setText("Lineas");
+        botonLineas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonLineasMouseClicked(evt);
+            }
+        });
+
+        textoTH.setText("0");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+            .addComponent(jScrollPane2)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(botonBinaria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botonCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botonLineas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textoTH))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonBinaria)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonCuadrados)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonLineas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textoTH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 263, Short.MAX_VALUE))
         );
 
         jSplitPane2.setLeftComponent(jPanel2);
@@ -145,7 +190,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
         int returnVal = selectorArchivos.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
            Mat im;
-           modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
+           modelo.setImagenOriginal(selectorArchivos.getSelectedFile(), Integer.parseInt(textoTH.getText()));
            im = modelo.getImagenCuadrados();
            mostrar(im);
            rootArbolResultados.add(arImagenOriginal);
@@ -158,6 +203,18 @@ public class InterfazGrafica extends javax.swing.JFrame {
            modelo.guardar(selectorArchivos.getSelectedFile());
         }
     }//GEN-LAST:event_menuItemGuardarActionPerformed
+
+    private void botonBinariaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonBinariaMouseClicked
+        mostrar(modelo.getImagenBinaria(Integer.parseInt(textoTH.getText())));
+    }//GEN-LAST:event_botonBinariaMouseClicked
+
+    private void botonCuadradosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonCuadradosMouseClicked
+        mostrar(modelo.getImagenCuadrados());
+    }//GEN-LAST:event_botonCuadradosMouseClicked
+
+    private void botonLineasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineasMouseClicked
+        mostrar(modelo.getImagenLineas(Integer.parseInt(textoTH.getText())));
+    }//GEN-LAST:event_botonLineasMouseClicked
 
     /**
      * @param args the command line arguments
@@ -189,6 +246,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private DefaultMutableTreeNode rootArbolResultados;
     private javax.swing.JTree arbolResultados;
+    private javax.swing.JButton botonBinaria;
+    private javax.swing.JButton botonCuadrados;
+    private javax.swing.JButton botonLineas;
     private javax.swing.JLabel imagen;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -201,6 +261,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemGuardar;
     private javax.swing.JMenuItem menuItemSalir;
     private javax.swing.JPanel panelVisualizador;
+    private javax.swing.JTextField textoTH;
     // End of variables declaration//GEN-END:variables
     // Elementos del arbolResultados
     private DefaultMutableTreeNode arImagenOriginal = new DefaultMutableTreeNode("Imagen original", false);
