@@ -142,7 +142,7 @@ public class Simeav {
     
     private void detectarVertices(int blockSize, int apertureSize, double k){
         MatOfPoint corners = new MatOfPoint();
-        Imgproc.goodFeaturesToTrack(this.imagenBinaria, corners, 50, 0.01, apertureSize, new Mat(), blockSize, false, k);
+        Imgproc.goodFeaturesToTrack(this.imagenBinaria, corners, 100, 0.01, apertureSize, new Mat(), blockSize, false, k);
 //        // detectar vertices
 //        Imgproc.cornerHarris(imagenBinaria, corners, blockSize, apertureSize, k, Imgproc.BORDER_DEFAULT);
 //        // normalizar la imagen
@@ -159,7 +159,7 @@ public class Simeav {
 //            }
 //        }
         for(int i = 0; i < corners.height(); i++){
-            Core.circle(resultado, new Point(corners.get(i, 0)), 5, new Scalar(180, 170, 5), -1);
+            Core.circle(resultado, new Point(corners.get(i, 0)), 3, new Scalar(180, 170, 5), -1);
         }
         this.imagenVertices = resultado;
     }
@@ -172,7 +172,10 @@ public class Simeav {
 //        Imgproc.Canny(imGrises, bw, 100, 150, 5, true);
         Imgproc.GaussianBlur(imGrises, bw, new Size(5,5), 0);
         Imgproc.threshold(bw, bw, 200, 250, Imgproc.THRESH_BINARY_INV);
+        Imgproc.blur(bw, bw, new Size(15,15));
         this.imagenBinaria = bw;
+        dilate();
+        dilate();
     }
     
     private void erode(){

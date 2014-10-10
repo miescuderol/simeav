@@ -115,7 +115,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
         jLabel2.setText("Aperture size");
 
-        textoAS.setText("3");
+        textoAS.setText("0");
 
         jLabel3.setText("k");
 
