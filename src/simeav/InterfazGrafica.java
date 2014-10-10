@@ -55,6 +55,16 @@ public class InterfazGrafica extends javax.swing.JFrame {
         botonCuadrados = new javax.swing.JButton();
         botonLineas = new javax.swing.JButton();
         textoTH = new javax.swing.JTextField();
+        botonVertices = new javax.swing.JButton();
+        textoBS = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        textoAS = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        textoK = new javax.swing.JTextField();
+        botonErode = new javax.swing.JButton();
+        botonDilate = new javax.swing.JButton();
+        botonContornos = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         panelVisualizador = new javax.swing.JPanel();
         imagen = new javax.swing.JLabel();
@@ -92,6 +102,46 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
         textoTH.setText("0");
 
+        botonVertices.setText("Vertices");
+        botonVertices.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonVerticesMouseClicked(evt);
+            }
+        });
+
+        textoBS.setText("2");
+
+        jLabel1.setText("Block size");
+
+        jLabel2.setText("Aperture size");
+
+        textoAS.setText("3");
+
+        jLabel3.setText("k");
+
+        textoK.setText("0.04");
+
+        botonErode.setText("E");
+        botonErode.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonErodeMouseClicked(evt);
+            }
+        });
+
+        botonDilate.setText("D");
+        botonDilate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonDilateMouseClicked(evt);
+            }
+        });
+
+        botonContornos.setText("Contornos");
+        botonContornos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonContornosMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -103,7 +153,22 @@ public class InterfazGrafica extends javax.swing.JFrame {
                     .addComponent(botonBinaria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botonCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botonLineas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textoTH))
+                    .addComponent(botonVertices, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textoTH)
+                    .addComponent(textoBS)
+                    .addComponent(textoAS)
+                    .addComponent(textoK)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(botonErode, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(botonDilate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(botonContornos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -117,8 +182,28 @@ public class InterfazGrafica extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botonLineas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonVertices)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonContornos)
+                .addGap(2, 2, 2)
                 .addComponent(textoTH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 263, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textoBS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textoAS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textoK, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botonErode)
+                    .addComponent(botonDilate))
+                .addGap(0, 42, Short.MAX_VALUE))
         );
 
         jSplitPane2.setLeftComponent(jPanel2);
@@ -205,7 +290,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemGuardarActionPerformed
 
     private void botonBinariaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonBinariaMouseClicked
-        mostrar(modelo.getImagenBinaria(Integer.parseInt(textoTH.getText())));
+        mostrar(modelo.getImagenBinaria());
     }//GEN-LAST:event_botonBinariaMouseClicked
 
     private void botonCuadradosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonCuadradosMouseClicked
@@ -215,6 +300,25 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private void botonLineasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineasMouseClicked
         mostrar(modelo.getImagenLineas(Integer.parseInt(textoTH.getText())));
     }//GEN-LAST:event_botonLineasMouseClicked
+
+    private void botonVerticesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonVerticesMouseClicked
+        int bs = Integer.parseInt(textoBS.getText());
+        int as = Integer.parseInt(textoAS.getText());
+        double k = Double.parseDouble(textoK.getText());
+        mostrar(modelo.getImagenVertices(bs, as, k));
+    }//GEN-LAST:event_botonVerticesMouseClicked
+
+    private void botonErodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonErodeMouseClicked
+        mostrar(modelo.getErode());
+    }//GEN-LAST:event_botonErodeMouseClicked
+
+    private void botonDilateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonDilateMouseClicked
+        mostrar(modelo.getDilate());
+    }//GEN-LAST:event_botonDilateMouseClicked
+
+    private void botonContornosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonContornosMouseClicked
+        mostrar(modelo.getContornos());
+    }//GEN-LAST:event_botonContornosMouseClicked
 
     /**
      * @param args the command line arguments
@@ -247,9 +351,16 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private DefaultMutableTreeNode rootArbolResultados;
     private javax.swing.JTree arbolResultados;
     private javax.swing.JButton botonBinaria;
+    private javax.swing.JButton botonContornos;
     private javax.swing.JButton botonCuadrados;
+    private javax.swing.JButton botonDilate;
+    private javax.swing.JButton botonErode;
     private javax.swing.JButton botonLineas;
+    private javax.swing.JButton botonVertices;
     private javax.swing.JLabel imagen;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -261,6 +372,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemGuardar;
     private javax.swing.JMenuItem menuItemSalir;
     private javax.swing.JPanel panelVisualizador;
+    private javax.swing.JTextField textoAS;
+    private javax.swing.JTextField textoBS;
+    private javax.swing.JTextField textoK;
     private javax.swing.JTextField textoTH;
     // End of variables declaration//GEN-END:variables
     // Elementos del arbolResultados

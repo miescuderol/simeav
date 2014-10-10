@@ -34,16 +34,17 @@ import org.opencv.imgproc.Imgproc;
  * @author Nacha
  */
 public class Simeav {
-
-    
-    Mat imagenOriginal;
-    Mat imagenCuadrados;
-    Mat imagenBinaria;
-    Mat imagenLineas;
+ 
+    private Mat imagenOriginal;
+    private Mat imagenCuadrados;
+    private Mat imagenBinaria;
+    private Mat imagenLineas;
+    private Mat imagenVertices;
+    private Mat imagenContornos;
     
     Mat setImagenOriginal(File selectedFile, int th) {
         imagenOriginal = Highgui.imread(selectedFile.getAbsolutePath());
-        calcularBinaria(th);
+        calcularBinaria();
         detectarCuadrados();
         detectarLineas(th);
         return imagenOriginal;
@@ -70,14 +71,33 @@ public class Simeav {
         return imagenCuadrados;
     }
     
-    Mat getImagenBinaria(int i) {
-        calcularBinaria(i);
+    Mat getImagenBinaria() {
+        calcularBinaria();
         return imagenBinaria;
     }
     
     Mat getImagenLineas(int th) {
         detectarLineas(th);
         return imagenLineas;
+    }
+    
+    Mat getImagenVertices(int bs, int as, double k){
+        detectarVertices(bs, as, k);
+        return imagenVertices;
+    }
+    
+    Mat getErode(){
+        erode();
+        return imagenBinaria;
+    }
+    
+    Mat getDilate(){
+        dilate();
+        return imagenBinaria;
+    }
+    
+    Mat getContornos() {
+        return imagenContornos;
     }
 
     private void detectarCuadrados() {
@@ -97,8 +117,10 @@ public class Simeav {
             i++;
         }
         Mat resultado = Mat.zeros(this.imagenOriginal.size(), CvType.CV_8UC3);
+        imagenContornos = Mat.zeros(this.imagenOriginal.size(), CvType.CV_8UC3);
         for(i = 0; i < contornos.size(); i++){
             Scalar color = new Scalar(180, 170, 5);
+            Imgproc.drawContours(imagenContornos, cp, i, color, 1, 8, jerarquia, 0, new Point());
             Imgproc.drawContours(resultado, cp, i, color, 1, 8, jerarquia, 0, new Point());
             Core.rectangle(resultado, rectangulos.get(i).tl(), rectangulos.get(i).br(), color, 2, 8, 0);
         }
@@ -116,17 +138,52 @@ public class Simeav {
         }
         this.imagenLineas = resultado;
     }
+
     
-    private void calcularBinaria(int i){
+    private void detectarVertices(int blockSize, int apertureSize, double k){
+        MatOfPoint corners = new MatOfPoint();
+        Imgproc.goodFeaturesToTrack(this.imagenBinaria, corners, 50, 0.01, apertureSize, new Mat(), blockSize, false, k);
+//        // detectar vertices
+//        Imgproc.cornerHarris(imagenBinaria, corners, blockSize, apertureSize, k, Imgproc.BORDER_DEFAULT);
+//        // normalizar la imagen
+//        Mat normal = new Mat();
+//        Core.normalize(corners, normal, 0, 255, Core.NORM_MINMAX, CvType.CV_32FC1, new Mat());
+//        Core.convertScaleAbs(normal, normal);
+        Mat resultado = this.imagenBinaria.clone();
+        Imgproc.cvtColor(resultado, resultado, Imgproc.COLOR_GRAY2BGR);
+//        for(int j = 0; j < normal.rows(); j++) {
+//            for(int i = 0; i < normal.cols(); i++){
+//                if (normal.get(j, i)[0] > 200){
+//                    Core.circle(resultado, new Point(i,j), 5, new Scalar(180, 170, 5), 2, 8, 0);
+//                }
+//            }
+//        }
+        for(int i = 0; i < corners.height(); i++){
+            Core.circle(resultado, new Point(corners.get(i, 0)), 5, new Scalar(180, 170, 5), -1);
+        }
+        this.imagenVertices = resultado;
+    }
+    
+    
+    private void calcularBinaria(){
         Mat imGrises = new Mat();
         Mat bw = new Mat();
         Imgproc.cvtColor(this.imagenOriginal, imGrises, Imgproc.COLOR_BGR2GRAY);
 //        Imgproc.Canny(imGrises, bw, 100, 150, 5, true);
         Imgproc.GaussianBlur(imGrises, bw, new Size(5,5), 0);
         Imgproc.threshold(bw, bw, 200, 250, Imgproc.THRESH_BINARY_INV);
-        Mat kernel = Imgproc.getStructuringElement(1, new Size(3,3));
-        Imgproc.dilate(bw, bw, kernel, new Point(-1,-1), i);
-        Imgproc.erode(bw, bw, kernel, new Point(-1,-1), i);
         this.imagenBinaria = bw;
     }
+    
+    private void erode(){
+        Mat kernel = Imgproc.getStructuringElement(1, new Size(3,3));
+        Imgproc.erode(imagenBinaria, imagenBinaria, kernel);
+    }
+    
+    private void dilate(){
+        Mat kernel = Imgproc.getStructuringElement(1, new Size(3,3));
+        Imgproc.dilate(imagenBinaria, imagenBinaria, kernel);
+    }
+
+
 }
