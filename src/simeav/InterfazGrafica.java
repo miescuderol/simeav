@@ -298,22 +298,22 @@ public class InterfazGrafica extends javax.swing.JFrame {
     }//GEN-LAST:event_botonCuadradosMouseClicked
 
     private void botonLineasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineasMouseClicked
-        mostrar(modelo.getImagenLineas(Integer.parseInt(textoTH.getText())));
+        mostrar(modelo.getImagenLineas());
     }//GEN-LAST:event_botonLineasMouseClicked
 
     private void botonVerticesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonVerticesMouseClicked
         int bs = Integer.parseInt(textoBS.getText());
         int as = Integer.parseInt(textoAS.getText());
         double k = Double.parseDouble(textoK.getText());
-        mostrar(modelo.getImagenVertices(bs, as, k));
+        mostrar(modelo.getImagenVertices());
     }//GEN-LAST:event_botonVerticesMouseClicked
 
     private void botonErodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonErodeMouseClicked
-        mostrar(modelo.getErode());
+        mostrar(modelo.getErode(modelo.getImagenBinaria()));
     }//GEN-LAST:event_botonErodeMouseClicked
 
     private void botonDilateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonDilateMouseClicked
-        mostrar(modelo.getDilate());
+        mostrar(modelo.getDilate(modelo.getImagenBinaria()));
     }//GEN-LAST:event_botonDilateMouseClicked
 
     private void botonContornosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonContornosMouseClicked
