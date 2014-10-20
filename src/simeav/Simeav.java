@@ -10,10 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import static java.lang.Math.random;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opencv.core.Core;
@@ -124,22 +121,33 @@ public class Simeav {
     private Mat detectarCuadrados(Mat original) {
         Mat jerarquia = new Mat();
         ArrayList<MatOfPoint> contornos = new ArrayList<>();
-        Imgproc.findContours(original.clone(), contornos, jerarquia, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(original.clone(), contornos, jerarquia, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
         ArrayList<MatOfPoint> cp = new ArrayList<>(contornos.size());
         ArrayList<Rect> rectangulos = new ArrayList<>(contornos.size());
-        int i = 0;
-        for (MatOfPoint contorno : contornos) {
-            MatOfPoint2f contorno2f = new MatOfPoint2f();
-            contorno2f.fromList(contorno.toList());
-            MatOfPoint2f c = new MatOfPoint2f();
-            Imgproc.approxPolyDP(contorno2f, c, 3, true);
-            cp.add(new MatOfPoint(c.toArray()));
-            rectangulos.add(Imgproc.boundingRect(cp.get(i))); 
-            i++;
+        System.out.println("contornos @detectarCuadrados: "
+                + contornos.size());
+        System.out.println(contornos.toString());
+        System.out.println("jerarquia @detectarCuadrados: "
+                + jerarquia.size());
+        System.out.println(jerarquia.dump());
+//        contornos.remove(0);
+        for (int i = 0; i < contornos.size(); i++) {
+            System.out.println(jerarquia.get(0, i)[3]);
+            if(jerarquia.get(0, i)[3] > -1){
+                MatOfPoint2f contorno2f = new MatOfPoint2f();
+                contorno2f.fromList(contornos.get(i).toList());
+                MatOfPoint2f c = new MatOfPoint2f();
+                Imgproc.approxPolyDP(contorno2f, c, 3, true);
+                cp.add(new MatOfPoint(c.toArray()));
+                System.out.println("tamaño cp: " + cp.get(cp.size()-1).size());
+                int lados = cp.get(cp.size()-1).height();
+                if((4 <= lados) && lados < 10)
+                    rectangulos.add(Imgproc.boundingRect(new MatOfPoint(c.toArray()))); 
+            }
         }
         Mat resultado = Mat.zeros(original.size(), CvType.CV_8UC3);
         imagenContornos = Mat.zeros(original.size(), CvType.CV_8UC3);
-        for(i = 0; i < contornos.size(); i++){
+        for(int i = 0; i < rectangulos.size(); i++){
             Scalar color = new Scalar(180, 170, 5);
             Imgproc.drawContours(imagenContornos, contornos, i, color, 1, 8, jerarquia, 0, new Point());
             Imgproc.drawContours(resultado, cp, i, color, 1, 8, jerarquia, 0, new Point());
@@ -155,10 +163,10 @@ public class Simeav {
         Mat resultado = Mat.zeros(original.size(), CvType.CV_8UC3);
         for(int i = 0; i < vertices.size(); i++){
             for(int j = 0; j < vertices.size(); j++){
-                System.out.println("vertice " + i + ": "
-                        + vertices.get(i).x + ", " + vertices.get(i).y
-                        + " vertice " + j + ": "
-                        + vertices.get(j).x + ", " + vertices.get(j).y);
+//                System.out.println("vertice " + i + ": "
+//                        + vertices.get(i).x + ", " + vertices.get(i).y
+//                        + " vertice " + j + ": "
+//                        + vertices.get(j).x + ", " + vertices.get(j).y);
                 Core.line(resultado, new Point(vertices.get(i).x, vertices.get(i).y), new Point(vertices.get(j).x, vertices.get(j).y), new Scalar(180, 170, 5), 1);
             }
         }
@@ -181,9 +189,7 @@ public class Simeav {
         
         Mat jerarquia = new Mat();
         ArrayList<MatOfPoint> contornos = new ArrayList<>();
-        Imgproc.findContours(bw.clone(), contornos, jerarquia, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        System.out.println("contornos"
-                + contornos.size());
+        Imgproc.findContours(bw.clone(), contornos, jerarquia, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         ArrayList<Moments> mu = new ArrayList<>(contornos.size());
         for(int i = 0; i < contornos.size(); i++){
             mu.add(i, Imgproc.moments(contornos.get(i), false));
