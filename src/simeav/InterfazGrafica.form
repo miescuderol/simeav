@@ -112,7 +112,7 @@
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="botonContornos" alignment="0" max="32767" attributes="0"/>
+                          <Component id="botonSacarCuadrados" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -131,7 +131,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="botonVertices" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonContornos" min="-2" max="-2" attributes="0"/>
+                      <Component id="botonSacarCuadrados" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                       <Component id="textoTH" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -256,12 +256,12 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonDilateMouseClicked"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="botonContornos">
+            <Component class="javax.swing.JButton" name="botonSacarCuadrados">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Contornos"/>
+                <Property name="text" type="java.lang.String" value="- Cuadrados"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonContornosMouseClicked"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonSacarCuadradosMouseClicked"/>
               </Events>
             </Component>
           </SubComponents>
