@@ -55,7 +55,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
         botonCuadrados = new javax.swing.JButton();
         botonLineas = new javax.swing.JButton();
         textoTH = new javax.swing.JTextField();
-        botonVertices = new javax.swing.JButton();
+        botonGrafo = new javax.swing.JButton();
         textoBS = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -102,10 +102,10 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
         textoTH.setText("0");
 
-        botonVertices.setText("Vertices");
-        botonVertices.addMouseListener(new java.awt.event.MouseAdapter() {
+        botonGrafo.setText("Grafo");
+        botonGrafo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonVerticesMouseClicked(evt);
+                botonGrafoMouseClicked(evt);
             }
         });
 
@@ -153,7 +153,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
                     .addComponent(botonBinaria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botonCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botonLineas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botonVertices, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botonGrafo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textoTH)
                     .addComponent(textoBS)
                     .addComponent(textoAS)
@@ -182,7 +182,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botonLineas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonVertices)
+                .addComponent(botonGrafo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botonSacarCuadrados)
                 .addGap(2, 2, 2)
@@ -298,15 +298,12 @@ public class InterfazGrafica extends javax.swing.JFrame {
     }//GEN-LAST:event_botonCuadradosMouseClicked
 
     private void botonLineasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineasMouseClicked
-        mostrar(modelo.getImagenLineas());
+        
     }//GEN-LAST:event_botonLineasMouseClicked
 
-    private void botonVerticesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonVerticesMouseClicked
-        int bs = Integer.parseInt(textoBS.getText());
-        int as = Integer.parseInt(textoAS.getText());
-        double k = Double.parseDouble(textoK.getText());
-        mostrar(modelo.getImagenVertices());
-    }//GEN-LAST:event_botonVerticesMouseClicked
+    private void botonGrafoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonGrafoMouseClicked
+        mostrar(modelo.dibujarGrafo());
+    }//GEN-LAST:event_botonGrafoMouseClicked
 
     private void botonErodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonErodeMouseClicked
         mostrar(modelo.getErode(modelo.getImagenBinaria()));
@@ -354,9 +351,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private javax.swing.JButton botonCuadrados;
     private javax.swing.JButton botonDilate;
     private javax.swing.JButton botonErode;
+    private javax.swing.JButton botonGrafo;
     private javax.swing.JButton botonLineas;
     private javax.swing.JButton botonSacarCuadrados;
-    private javax.swing.JButton botonVertices;
     private javax.swing.JLabel imagen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

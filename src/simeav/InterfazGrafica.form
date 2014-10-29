@@ -94,7 +94,7 @@
                           <Component id="botonBinaria" max="32767" attributes="0"/>
                           <Component id="botonCuadrados" alignment="0" max="32767" attributes="0"/>
                           <Component id="botonLineas" alignment="1" max="32767" attributes="0"/>
-                          <Component id="botonVertices" alignment="0" max="32767" attributes="0"/>
+                          <Component id="botonGrafo" alignment="0" max="32767" attributes="0"/>
                           <Component id="textoTH" alignment="0" max="32767" attributes="0"/>
                           <Component id="textoBS" alignment="0" max="32767" attributes="0"/>
                           <Component id="textoAS" alignment="0" max="32767" attributes="0"/>
@@ -129,7 +129,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="botonLineas" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonVertices" min="-2" max="-2" attributes="0"/>
+                      <Component id="botonGrafo" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="botonSacarCuadrados" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
@@ -202,12 +202,12 @@
                 <Property name="text" type="java.lang.String" value="0"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="botonVertices">
+            <Component class="javax.swing.JButton" name="botonGrafo">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Vertices"/>
+                <Property name="text" type="java.lang.String" value="Grafo"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonVerticesMouseClicked"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonGrafoMouseClicked"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="textoBS">
