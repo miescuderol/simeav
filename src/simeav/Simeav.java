@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,6 +53,7 @@ public class Simeav {
     }
     
     Mat setImagenOriginal(File selectedFile, int th) {
+        diagrama = new Diagrama();
         imagenOriginal = Highgui.imread(selectedFile.getAbsolutePath());
         imagenBinaria = calcularBinaria(imagenOriginal);
         imagenBinaria = dilate(imagenBinaria);
@@ -116,15 +118,15 @@ public class Simeav {
     }
     
     Mat dibujarGrafo(){
-        Mat grafo = Mat.zeros(imagenBinaria.size(), CvType.CV_8U);
+        Mat grafo = Mat.zeros(imagenBinaria.size(), CvType.CV_8UC3);
         ArrayList<Modulo> modulos = diagrama.getModulos();
         for(int i = 0; i < modulos.size(); i++){
             Rect rect = modulos.get(i).getRectangulo();
             Core.rectangle(grafo, rect.tl(), rect.br(), new Scalar(182,170,5), 3);
         }
-        int cant = diagrama.getCantConectores();
-        for(int i = 0; i < cant; i++){
-            Conector c = diagrama.getConector(i);
+        ArrayList<Conector> conectores = diagrama.getConectores();
+        for(int i = 0; i < conectores.size(); i++){
+            Conector c = conectores.get(i);
             Core.line(grafo, c.getDesde(), c.getHasta(), new Scalar(180,170, 5), 2);
         }
         return grafo;
@@ -134,8 +136,6 @@ public class Simeav {
         Mat jerarquia = new Mat();
         ArrayList<MatOfPoint> contornos = new ArrayList<>();
         Imgproc.findContours(original.clone(), contornos, jerarquia, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        System.out.println("jerarquia"
-                + jerarquia.dump());
         return contornos;
     }
 
@@ -147,14 +147,12 @@ public class Simeav {
         rectangulos = new HashMap<>();
         Integer id_cuadrado = 0;
         for (int i = 0; i < contornos.size(); i++) {
-            System.out.println(jerarquia.get(0, i)[3]);
             if(jerarquia.get(0, i)[3] > -1){
                 MatOfPoint2f contorno2f = new MatOfPoint2f();
                 contorno2f.fromList(contornos.get(i).toList());
                 MatOfPoint2f c = new MatOfPoint2f();
                 Imgproc.approxPolyDP(contorno2f, c, 3, true);
                 cp.add(new MatOfPoint(c.toArray()));
-                System.out.println("tamaño cp: " + cp.get(cp.size()-1).size());
                 int lados = cp.get(cp.size()-1).height();
                 if((4 <= lados) && lados < 12){
                     rectangulos.put(id_cuadrado, Imgproc.boundingRect(new MatOfPoint(c.toArray()))); 
@@ -248,7 +246,6 @@ public class Simeav {
         ArrayList<MatOfPoint> contornos = detectarContornos(sinCuadrados);
         for(int i = 0; i < contornos.size(); i++){
             double area = Imgproc.contourArea(contornos.get(i));
-            System.out.println("area contorno: " + area);
             if(area <= 50){
                 Imgproc.drawContours(sinCuadrados, contornos, i, new Scalar(0, 0, 0), -1);
             }
@@ -262,7 +259,6 @@ public class Simeav {
         ArrayList<MatOfPoint> contornos_intersec = new ArrayList<>();
         int r, g, b;
         for(int j = 0; j < contornos.size(); j ++){
-            System.out.println("j: " + j);
             Imgproc.drawContours(contorno, contornos, j, new Scalar(180, 255, 255), -1);
             Imgproc.cvtColor(contorno, contorno, Imgproc.COLOR_BGR2GRAY);
             Core.bitwise_and(contorno, imagenCuadrados, intersec);
@@ -277,12 +273,12 @@ public class Simeav {
                 }
                 ArrayList<Point> extremos = getCentros(contornos_intersec);
                 for(int k = 0; k < extremos.size(); k++){
-                    System.out.println("algo hay" + extremos.get(k).x + " " + extremos.get(k).y);
                     Core.circle(conectores, extremos.get(k), 4, color, -1);
                 }
                 analizarExtremos(j, extremos);
-                Core.rectangle(conectores, diagrama.getConector(j).getModuloDesde().getRectangulo().tl(), diagrama.getConector(j).getModuloDesde().getRectangulo().br(), color, 3);
-                Core.rectangle(conectores, diagrama.getConector(j).getModuloHasta().getRectangulo().tl(), diagrama.getConector(j).getModuloHasta().getRectangulo().br(), color, 3);
+                Conector c = diagrama.getConector(j);
+                Core.rectangle(conectores, c.getModuloDesde().getRectangulo().tl(), c.getModuloDesde().getRectangulo().br(), color, 3);
+                Core.rectangle(conectores, c.getModuloHasta().getRectangulo().tl(), c.getModuloHasta().getRectangulo().br(), color, 3);
             }
             contorno = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
         }
@@ -308,23 +304,45 @@ public class Simeav {
 
     private void analizarExtremos(Integer id_conector, ArrayList<Point> extremos) {
         ArrayList<Modulo> modulos = diagrama.getModulos();
-        Set<Modulo> modulos_conectados = new HashSet<>();
+        ArrayList<Modulo> modulos_conectados = new ArrayList<>();
         for(int i = 0; i < extremos.size(); i++){
             for(int j = 0; j < modulos.size(); j++){
                 Rect rectangulo = modulos.get(j).getRectangulo();
-                System.out.println("rectangulo " + rectangulo.tl().x + ", "
-                        + rectangulo.tl().y + ", "
-                        + rectangulo.br().x + ", "
-                        + rectangulo.br().y );
                 if(extremos.get(i).inside(rectangulo)){
-                    System.out.println("el pavo esta en el saco");
                     modulos_conectados.add(modulos.get(j));
                 }
             }
         }
         int i = modulos_conectados.size();
-        Modulo m1 = (Modulo) modulos_conectados.toArray()[0];
-        Modulo m2 = (Modulo) modulos_conectados.toArray()[i-1];
-        diagrama.addConector(id_conector, m1, m2, extremos.get(0), extremos.get(extremos.size()-1));   
+        if(i > 2){
+            int j = 0;
+            int k = 1;
+            Modulo m1, m2;
+            Point p1, p2;
+            while(j < extremos.size()){
+                m1 = modulos_conectados.get(j);
+                m2 = modulos_conectados.get(k);
+                p1 = extremos.get(j);
+                p2 = extremos.get(k);
+                if((m1.getId() == m2.getId()) && ((abs(p1.x - p2.x) < 0.1) || (abs(p1.y - p2.y) < 0.1))){
+                    Point centro = new Point((p1.x + p2.x)/2, (p1.y + p2.y)/2);
+                    extremos.remove(p1);
+                    extremos.remove(p2);
+                    extremos.add(centro);
+                    modulos_conectados.remove(m1);
+                    j = extremos.size();
+                    k = j + 1;
+                } else if(k == extremos.size() - 1){
+                    j = k;
+                    k = 0;
+                } else {
+                    j++;
+                    k++;
+                }
+            }
+        }
+        Modulo m1 = (Modulo) modulos_conectados.get(0);
+        Modulo m2 = (Modulo) modulos_conectados.get(1);
+        diagrama.addConector(id_conector, m1, m2, extremos.get(0), extremos.get(1));   
     }
 }

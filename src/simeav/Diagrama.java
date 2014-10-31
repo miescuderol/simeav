@@ -17,11 +17,11 @@ import org.opencv.core.Rect;
  */
 public class Diagrama {
     private ArrayList<Modulo> modulos;
-    private HashMap<Integer, Conector> conectores;
+    private ArrayList<Conector> conectores;
     
     public Diagrama(){
         modulos = new ArrayList<>();
-        conectores = new HashMap<>();
+        conectores = new ArrayList<>();
     }
     
     public void addModulo(Integer id, Rect rectangulo){
@@ -29,23 +29,37 @@ public class Diagrama {
     }
     
     public Modulo getModulo(Integer id){
-        return modulos.get(id);
+        Modulo ret = null;
+        for(int i = 0; i < modulos.size(); i++){
+            ret = modulos.get(i);
+            if(ret.getId() == id){
+                return ret;
+            }
+        }
+        return ret;
     }
     
     public Conector getConector(Integer id){
-        return conectores.get(id);
+        Conector ret = null;
+        for(int i = 0; i < conectores.size(); i++){
+            ret = conectores.get(i);
+            if(ret.getId() == id){
+                return ret;
+            }
+        }
+        return ret;
     }
     
     public ArrayList<Modulo> getModulos(){
         return modulos;
     }
     
-    public int getCantConectores(){
-        return conectores.size();
+    public ArrayList<Conector> getConectores(){
+        return conectores;
     }
     
     public void addConector(Integer id, Modulo desde, Modulo hacia, Point p1, Point p2){
-        conectores.put(id, new Conector(id, desde, hacia, p1, p2, "tipo"));
+        conectores.add(new Conector(id, desde, hacia, p1, p2, "tipo"));
         desde.addAdyacente(id, hacia);
         hacia.addAdyacente(id, desde);
     }
