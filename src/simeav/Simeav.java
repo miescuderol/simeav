@@ -52,7 +52,7 @@ public class Simeav {
         diagrama = new Diagrama();
     }
     
-    Mat setImagenOriginal(File selectedFile, int th) {
+    Mat setImagenOriginal(File selectedFile) {
         diagrama = new Diagrama();
         imagenOriginal = Highgui.imread(selectedFile.getAbsolutePath());
         imagenBinaria = calcularBinaria(imagenOriginal);
@@ -324,7 +324,7 @@ public class Simeav {
                 m2 = modulos_conectados.get(k);
                 p1 = extremos.get(j);
                 p2 = extremos.get(k);
-                if((m1.getId() == m2.getId()) && ((abs(p1.x - p2.x) < 0.1) || (abs(p1.y - p2.y) < 0.1))){
+                if((m1.equals(m2)) && ((abs(p1.x - p2.x) < 0.1) || (abs(p1.y - p2.y) < 0.1))){
                     Point centro = new Point((p1.x + p2.x)/2, (p1.y + p2.y)/2);
                     extremos.remove(p1);
                     extremos.remove(p2);

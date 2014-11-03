@@ -10,6 +10,7 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -19,10 +20,10 @@ import org.opencv.core.Rect;
  * @author Nacha
  */
 class Modulo {
-    Integer id;
-    String nombre;
-    Rect rectangulo;
-    HashMap<Integer, Modulo> adyacentes;
+    private Integer id;
+    private String nombre;
+    private Rect rectangulo;
+    private HashMap<Integer, Modulo> adyacentes;
     
     public Modulo(Integer id, Rect rectangulo){
         this.id = id;
@@ -31,6 +32,29 @@ class Modulo {
         adyacentes = new HashMap<>();
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Modulo other = (Modulo) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+    
     public void setId(Integer id) {
         this.id = id;
     }

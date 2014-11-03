@@ -13,12 +13,12 @@ import org.opencv.core.Point;
  * @author Nacha
  */
 public class Conector {
-    Integer id;
-    Modulo modulo_desde;
-    Modulo modulo_hasta;
-    Point desde;
-    Point hasta;
-    String tipo;
+    private Integer id;
+    private Modulo modulo_desde;
+    private Modulo modulo_hasta;
+    private Point desde;
+    private Point hasta;
+    private String tipo;
     
     Conector(Integer id, Modulo modulo_desde, Modulo modulo_hasta, Point desde, Point hasta, String tipo){
         this.id = id;

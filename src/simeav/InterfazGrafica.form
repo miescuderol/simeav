@@ -93,26 +93,9 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="botonBinaria" max="32767" attributes="0"/>
                           <Component id="botonCuadrados" alignment="0" max="32767" attributes="0"/>
-                          <Component id="botonLineas" alignment="1" max="32767" attributes="0"/>
                           <Component id="botonGrafo" alignment="0" max="32767" attributes="0"/>
-                          <Component id="textoTH" alignment="0" max="32767" attributes="0"/>
-                          <Component id="textoBS" alignment="0" max="32767" attributes="0"/>
-                          <Component id="textoAS" alignment="0" max="32767" attributes="0"/>
-                          <Component id="textoK" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="botonErode" min="-2" pref="38" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="botonDilate" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
                           <Component id="botonSacarCuadrados" alignment="0" max="32767" attributes="0"/>
+                          <Component id="botonOriginal" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -123,35 +106,16 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jScrollPane2" min="-2" pref="107" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="botonOriginal" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="botonBinaria" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="botonCuadrados" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonLineas" min="-2" max="-2" attributes="0"/>
+                      <Component id="botonSacarCuadrados" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="botonGrafo" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonSacarCuadrados" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                      <Component id="textoTH" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="textoBS" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="textoAS" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="textoK" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="botonErode" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="botonDilate" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="42" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="240" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -189,19 +153,6 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonCuadradosMouseClicked"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="botonLineas">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Lineas"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonLineasMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JTextField" name="textoTH">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="0"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="botonGrafo">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Grafo"/>
@@ -210,58 +161,20 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonGrafoMouseClicked"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JTextField" name="textoBS">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="2"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel1">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Block size"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel2">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Aperture size"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="textoAS">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="0"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel3">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="k"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="textoK">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="0.04"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="botonErode">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="E"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonErodeMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="botonDilate">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="D"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonDilateMouseClicked"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JButton" name="botonSacarCuadrados">
               <Properties>
                 <Property name="text" type="java.lang.String" value="- Cuadrados"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonSacarCuadradosMouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="botonOriginal">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Original"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonOriginalMouseClicked"/>
               </Events>
             </Component>
           </SubComponents>

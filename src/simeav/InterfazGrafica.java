@@ -53,18 +53,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
         arbolResultados = new javax.swing.JTree(rootArbolResultados);
         botonBinaria = new javax.swing.JButton();
         botonCuadrados = new javax.swing.JButton();
-        botonLineas = new javax.swing.JButton();
-        textoTH = new javax.swing.JTextField();
         botonGrafo = new javax.swing.JButton();
-        textoBS = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        textoAS = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        textoK = new javax.swing.JTextField();
-        botonErode = new javax.swing.JButton();
-        botonDilate = new javax.swing.JButton();
         botonSacarCuadrados = new javax.swing.JButton();
+        botonOriginal = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         panelVisualizador = new javax.swing.JPanel();
         imagen = new javax.swing.JLabel();
@@ -93,15 +84,6 @@ public class InterfazGrafica extends javax.swing.JFrame {
             }
         });
 
-        botonLineas.setText("Lineas");
-        botonLineas.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonLineasMouseClicked(evt);
-            }
-        });
-
-        textoTH.setText("0");
-
         botonGrafo.setText("Grafo");
         botonGrafo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -109,36 +91,17 @@ public class InterfazGrafica extends javax.swing.JFrame {
             }
         });
 
-        textoBS.setText("2");
-
-        jLabel1.setText("Block size");
-
-        jLabel2.setText("Aperture size");
-
-        textoAS.setText("0");
-
-        jLabel3.setText("k");
-
-        textoK.setText("0.04");
-
-        botonErode.setText("E");
-        botonErode.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonErodeMouseClicked(evt);
-            }
-        });
-
-        botonDilate.setText("D");
-        botonDilate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonDilateMouseClicked(evt);
-            }
-        });
-
         botonSacarCuadrados.setText("- Cuadrados");
         botonSacarCuadrados.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 botonSacarCuadradosMouseClicked(evt);
+            }
+        });
+
+        botonOriginal.setText("Original");
+        botonOriginal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonOriginalMouseClicked(evt);
             }
         });
 
@@ -152,23 +115,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(botonBinaria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botonCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botonLineas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botonGrafo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textoTH)
-                    .addComponent(textoBS)
-                    .addComponent(textoAS)
-                    .addComponent(textoK)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(botonErode, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(botonDilate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(botonSacarCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(botonSacarCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botonOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -176,34 +125,16 @@ public class InterfazGrafica extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonOriginal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botonBinaria)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botonCuadrados)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonLineas)
+                .addComponent(botonSacarCuadrados)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botonGrafo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonSacarCuadrados)
-                .addGap(2, 2, 2)
-                .addComponent(textoTH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textoBS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textoAS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textoK, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(botonErode)
-                    .addComponent(botonDilate))
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 240, Short.MAX_VALUE))
         );
 
         jSplitPane2.setLeftComponent(jPanel2);
@@ -275,8 +206,8 @@ public class InterfazGrafica extends javax.swing.JFrame {
         int returnVal = selectorArchivos.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
            Mat im;
-           modelo.setImagenOriginal(selectorArchivos.getSelectedFile(), Integer.parseInt(textoTH.getText()));
-           im = modelo.getImagenCuadrados();
+           modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
+           im = modelo.getImagenOriginal();
            mostrar(im);
            rootArbolResultados.add(arImagenOriginal);
         }
@@ -297,25 +228,17 @@ public class InterfazGrafica extends javax.swing.JFrame {
         mostrar(modelo.getImagenCuadrados());
     }//GEN-LAST:event_botonCuadradosMouseClicked
 
-    private void botonLineasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineasMouseClicked
-        
-    }//GEN-LAST:event_botonLineasMouseClicked
-
     private void botonGrafoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonGrafoMouseClicked
         mostrar(modelo.dibujarGrafo());
     }//GEN-LAST:event_botonGrafoMouseClicked
 
-    private void botonErodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonErodeMouseClicked
-        mostrar(modelo.getErode(modelo.getImagenBinaria()));
-    }//GEN-LAST:event_botonErodeMouseClicked
-
-    private void botonDilateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonDilateMouseClicked
-        mostrar(modelo.getDilate(modelo.getImagenBinaria()));
-    }//GEN-LAST:event_botonDilateMouseClicked
-
     private void botonSacarCuadradosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonSacarCuadradosMouseClicked
         mostrar(modelo.getConectores());
     }//GEN-LAST:event_botonSacarCuadradosMouseClicked
+
+    private void botonOriginalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonOriginalMouseClicked
+        mostrar(modelo.getImagenOriginal());
+    }//GEN-LAST:event_botonOriginalMouseClicked
 
     /**
      * @param args the command line arguments
@@ -349,15 +272,10 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private javax.swing.JTree arbolResultados;
     private javax.swing.JButton botonBinaria;
     private javax.swing.JButton botonCuadrados;
-    private javax.swing.JButton botonDilate;
-    private javax.swing.JButton botonErode;
     private javax.swing.JButton botonGrafo;
-    private javax.swing.JButton botonLineas;
+    private javax.swing.JButton botonOriginal;
     private javax.swing.JButton botonSacarCuadrados;
     private javax.swing.JLabel imagen;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -369,10 +287,6 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemGuardar;
     private javax.swing.JMenuItem menuItemSalir;
     private javax.swing.JPanel panelVisualizador;
-    private javax.swing.JTextField textoAS;
-    private javax.swing.JTextField textoBS;
-    private javax.swing.JTextField textoK;
-    private javax.swing.JTextField textoTH;
     // End of variables declaration//GEN-END:variables
     // Elementos del arbolResultados
     private DefaultMutableTreeNode arImagenOriginal = new DefaultMutableTreeNode("Imagen original", false);
