@@ -12,13 +12,19 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Observable;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -28,14 +34,70 @@ import org.opencv.highgui.Highgui;
  *
  * @author Nacha
  */
-public class InterfazGrafica extends javax.swing.JFrame {
+public class InterfazGrafica extends javax.swing.JFrame implements java.util.Observer, TreeSelectionListener{
 
     /**
      * Creates new form InterfazGrafica
      */
     public InterfazGrafica() {
-        initComponents();
     }
+    
+    public void inicializar(Simeav modelo){
+        this.modelo = modelo;
+        this.modelo.addObserver(this);
+        initComponents();
+        arbolResultados.getSelectionModel().setSelectionMode
+                (TreeSelectionModel.SINGLE_TREE_SELECTION);
+        arbolResultados.addTreeSelectionListener(this);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ArrayList<InfoImagen> imagenes = modelo.getImagenes();
+        for(int i = 0; i < imagenes.size(); i++){
+            InfoImagen imagen = imagenes.get(i);
+            if(rootArbolResultados.getChildCount() <= i){
+                DefaultMutableTreeNode nodo;
+                nodo = new DefaultMutableTreeNode(imagen, false);
+                rootArbolResultados.add(nodo);
+            }
+            else {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)rootArbolResultados.getChildAt(i);
+                node.setUserObject(imagen);
+            }
+        }
+        mostrar(((InfoImagen)((DefaultMutableTreeNode)rootArbolResultados.getChildAt(0)).getUserObject()).getImagen());
+    }    
+    
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                           arbolResultados.getLastSelectedPathComponent();
+
+        if (node == null) return;
+
+        Object nodeInfo = node.getUserObject();
+        if (node.isLeaf()) {
+            InfoImagen imagen = (InfoImagen)node.getUserObject();
+            mostrar(imagen.getImagen());
+        }
+    }
+
+    private void mostrar(Mat im) {
+        MatOfByte matOfByte = new MatOfByte();
+        Highgui.imencode(".jpg", im, matOfByte); 
+        byte[] byteArray = matOfByte.toArray();
+        try {
+            InputStream in = new ByteArrayInputStream(byteArray);
+            BufferedImage bufImage = ImageIO.read(in);
+            ImageIcon image = new ImageIcon(bufImage);
+            imagen.setIcon(image);
+        } catch (IOException e) {
+        }
+    }
+    
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -51,11 +113,6 @@ public class InterfazGrafica extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         rootArbolResultados = new DefaultMutableTreeNode("Root");
         arbolResultados = new javax.swing.JTree(rootArbolResultados);
-        botonBinaria = new javax.swing.JButton();
-        botonCuadrados = new javax.swing.JButton();
-        botonGrafo = new javax.swing.JButton();
-        botonSacarCuadrados = new javax.swing.JButton();
-        botonOriginal = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         panelVisualizador = new javax.swing.JPanel();
         imagen = new javax.swing.JLabel();
@@ -68,73 +125,19 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel2.setMinimumSize(new java.awt.Dimension(130, 0));
+
         jScrollPane2.setViewportView(arbolResultados);
-
-        botonBinaria.setText("Binaria");
-        botonBinaria.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonBinariaMouseClicked(evt);
-            }
-        });
-
-        botonCuadrados.setText("Cuadrados");
-        botonCuadrados.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonCuadradosMouseClicked(evt);
-            }
-        });
-
-        botonGrafo.setText("Grafo");
-        botonGrafo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonGrafoMouseClicked(evt);
-            }
-        });
-
-        botonSacarCuadrados.setText("- Cuadrados");
-        botonSacarCuadrados.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonSacarCuadradosMouseClicked(evt);
-            }
-        });
-
-        botonOriginal.setText("Original");
-        botonOriginal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonOriginalMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(botonBinaria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botonCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botonGrafo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botonSacarCuadrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botonOriginal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonOriginal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonBinaria)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonCuadrados)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonSacarCuadrados)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonGrafo)
-                .addGap(0, 240, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
         );
 
         jSplitPane2.setLeftComponent(jPanel2);
@@ -207,9 +210,8 @@ public class InterfazGrafica extends javax.swing.JFrame {
         if(returnVal == JFileChooser.APPROVE_OPTION) {
            Mat im;
            modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
-           im = modelo.getImagenOriginal();
-           mostrar(im);
-           rootArbolResultados.add(arImagenOriginal);
+//           im = modelo.getImagenOriginal();
+//           mostrar(im);
         }
     }//GEN-LAST:event_menuItemAbrirActionPerformed
 
@@ -220,61 +222,15 @@ public class InterfazGrafica extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuItemGuardarActionPerformed
 
-    private void botonBinariaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonBinariaMouseClicked
-        mostrar(modelo.getImagenBinaria());
-    }//GEN-LAST:event_botonBinariaMouseClicked
+ 
+    
+    
+    
 
-    private void botonCuadradosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonCuadradosMouseClicked
-        mostrar(modelo.getImagenCuadrados());
-    }//GEN-LAST:event_botonCuadradosMouseClicked
-
-    private void botonGrafoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonGrafoMouseClicked
-        mostrar(modelo.dibujarGrafo());
-    }//GEN-LAST:event_botonGrafoMouseClicked
-
-    private void botonSacarCuadradosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonSacarCuadradosMouseClicked
-        mostrar(modelo.getConectores());
-    }//GEN-LAST:event_botonSacarCuadradosMouseClicked
-
-    private void botonOriginalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonOriginalMouseClicked
-        mostrar(modelo.getImagenOriginal());
-    }//GEN-LAST:event_botonOriginalMouseClicked
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InterfazGrafica.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new InterfazGrafica().setVisible(true);
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private DefaultMutableTreeNode rootArbolResultados;
     private javax.swing.JTree arbolResultados;
-    private javax.swing.JButton botonBinaria;
-    private javax.swing.JButton botonCuadrados;
-    private javax.swing.JButton botonGrafo;
-    private javax.swing.JButton botonOriginal;
-    private javax.swing.JButton botonSacarCuadrados;
     private javax.swing.JLabel imagen;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -289,21 +245,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private javax.swing.JPanel panelVisualizador;
     // End of variables declaration//GEN-END:variables
     // Elementos del arbolResultados
-    private DefaultMutableTreeNode arImagenOriginal = new DefaultMutableTreeNode("Imagen original", false);
     private DefaultMutableTreeNode arResultado;
     private JFileChooser selectorArchivos = new JFileChooser();
     private Simeav modelo = new Simeav();
 
-    private void mostrar(Mat im) {
-        MatOfByte matOfByte = new MatOfByte();
-        Highgui.imencode(".jpg", im, matOfByte); 
-        byte[] byteArray = matOfByte.toArray();
-        try {
-            InputStream in = new ByteArrayInputStream(byteArray);
-            BufferedImage bufImage = ImageIO.read(in);
-            ImageIcon image = new ImageIcon(bufImage);
-            imagen.setIcon(image);
-        } catch (IOException e) {
-        }
-    }
+
 }

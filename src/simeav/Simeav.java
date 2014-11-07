@@ -13,10 +13,9 @@ import java.io.UnsupportedEncodingException;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Random;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opencv.core.Core;
@@ -37,28 +36,27 @@ import org.opencv.imgproc.Moments;
  *
  * @author Nacha
  */
-public class Simeav {
+public class Simeav extends Observable{
  
-    private Mat imagenOriginal;
-    private Mat imagenCuadrados;
-    private Mat imagenBinaria;
-    private Mat imagenLineas;
-    private Mat imagenVertices;
-    private Mat imagenContornos;
     private Diagrama diagrama;
     private Map<Integer, Rect> rectangulos;
+    private ArrayList<InfoImagen> imagenes;
     
     Simeav(){
         diagrama = new Diagrama();
     }
     
-    Mat setImagenOriginal(File selectedFile) {
+    void setImagenOriginal(File selectedFile) {
         diagrama = new Diagrama();
-        imagenOriginal = Highgui.imread(selectedFile.getAbsolutePath());
-        imagenBinaria = calcularBinaria(imagenOriginal);
-        imagenBinaria = dilate(imagenBinaria);
-        imagenCuadrados = detectarCuadrados(imagenBinaria);
-        return imagenOriginal;
+        imagenes = new ArrayList<>();
+        System.out.println("archio " + selectedFile.getName());
+        imagenes.add(new InfoImagen("Original", Highgui.imread(selectedFile.getAbsolutePath())));
+        imagenes.add(new InfoImagen("Binaria", calcularBinaria(imagenes.get(imagenes.size()-1).getImagen())));
+        imagenes.add(new InfoImagen("Cuadrados", detectarCuadrados(imagenes.get(imagenes.size()-1).getImagen())));
+        imagenes.add(new InfoImagen("Conectores", detectarConectores(imagenes.get(0).getImagen(), imagenes.get(imagenes.size()-1).getImagen())));
+        imagenes.add(new InfoImagen("Grafo", dibujarGrafo()));
+        setChanged();
+        notifyObservers();
     }
 
     void guardar(File selectedFile) {
@@ -73,52 +71,14 @@ public class Simeav {
         }
     }
 
-    Mat getImagenOriginal() {
-        return imagenOriginal;
-    }
-    
-    Mat getImagenCuadrados(Mat imagen) {
-        return detectarCuadrados(imagen);
-    }
-    
-    Mat getImagenCuadrados(){
-        return this.imagenCuadrados;
-    }
-    
-    Mat getImagenBinaria(Mat imagen) {
-        return calcularBinaria(imagen);
-    }
-    
-    Mat getImagenBinaria(){
-        return this.imagenBinaria;
-    }
 
-    Mat getImagenVertices(Mat imagen){
-        return imagenVertices;
-    }
     
-    Mat getImagenVertices(){
-        return this.imagenVertices;
-    }
-    
-    Mat getErode(Mat imagen){
-        return erode(imagen);
-    }
-    
-    Mat getDilate(Mat imagen){
-        return dilate(imagen);
-    }
-    
-    Mat getContornos() {
-        return imagenContornos;
-    }
-    
-    Mat getConectores() {
-        return detectarConectores(borrarCuadrados());
+    ArrayList<InfoImagen> getImagenes(){
+        return imagenes;
     }
     
     Mat dibujarGrafo(){
-        Mat grafo = Mat.zeros(imagenBinaria.size(), CvType.CV_8UC3);
+        Mat grafo = Mat.zeros(imagenes.get(0).getImagen().size(), CvType.CV_8UC3);
         ArrayList<Modulo> modulos = diagrama.getModulos();
         for(int i = 0; i < modulos.size(); i++){
             Rect rect = modulos.get(i).getRectangulo();
@@ -140,6 +100,8 @@ public class Simeav {
     }
 
     private Mat detectarCuadrados(Mat original) {
+        Imgproc.blur(original, original, new Size(15,15));
+        original = dilate(original);
         Mat jerarquia = new Mat();
         ArrayList<MatOfPoint> contornos = new ArrayList<>();
         Imgproc.findContours(original.clone(), contornos, jerarquia, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -161,11 +123,9 @@ public class Simeav {
             }
         }
         Mat resultado = Mat.zeros(original.size(), CvType.CV_8U);
-        imagenContornos = Mat.zeros(original.size(), CvType.CV_8UC3);
         for(int i = 0; i < rectangulos.size(); i++){
             Scalar color = new Scalar(180, 170, 5);
             Scalar blanco = new Scalar(255,255,255);
-            Imgproc.drawContours(imagenContornos, contornos, i, color, 1, 8, jerarquia, 0, new Point());
 //            Imgproc.drawContours(resultado, cp, i, color, 1, 8, jerarquia, 0, new Point());
             Point tl = new Point(rectangulos.get(i).tl().x - 20, rectangulos.get(i).tl().y - 20);
             Point br = new Point(rectangulos.get(i).br().x + 20, rectangulos.get(i).br().y + 20);
@@ -200,7 +160,6 @@ public class Simeav {
 //            Imgproc.drawContours(resultado, contornos, i, color, 2, 8, jerarquia, 0, new Point());
             Core.circle(resultado, mc.get(i), 4, color, -1, 8, 0);
         }
-        imagenVertices = resultado;
         return mc;
     }
     
@@ -212,7 +171,6 @@ public class Simeav {
 //        Imgproc.Canny(imGrises, bw, 100, 150, 5, true);
         Imgproc.GaussianBlur(imGrises, bw, new Size(5,5), 0);
         Imgproc.threshold(bw, bw, 200, 250, Imgproc.THRESH_BINARY_INV);
-        Imgproc.blur(bw, bw, new Size(15,15));
         return bw;
 //        dilate();
     }
@@ -231,18 +189,16 @@ public class Simeav {
         return destino;
     }
 
-    private Mat borrarCuadrados() {
+    private Mat borrarCuadrados(Mat imagenOriginal, Mat imagenCuadrados) {
         Mat imGrises = new Mat();
         Imgproc.cvtColor(imagenOriginal, imGrises, Imgproc.COLOR_BGR2GRAY);
         Imgproc.threshold(imGrises, imGrises, 200, 250, Imgproc.THRESH_BINARY_INV);
         return imGrises.setTo(new Scalar(0, 0, 0), imagenCuadrados);
     }
 
-    private Mat detectarConectores(Mat sinCuadrados) {
+    private Mat detectarConectores(Mat original, Mat imagenCuadrados) {
+        Mat sinCuadrados = borrarCuadrados(original, imagenCuadrados);
         //elimino puntos que pueden haber quedado de la eliminacion de cuadrados
-        sinCuadrados = dilate(sinCuadrados);
-        sinCuadrados = dilate(sinCuadrados);
-        sinCuadrados = dilate(sinCuadrados);
         ArrayList<MatOfPoint> contornos = detectarContornos(sinCuadrados);
         for(int i = 0; i < contornos.size(); i++){
             double area = Imgproc.contourArea(contornos.get(i));
@@ -250,18 +206,27 @@ public class Simeav {
                 Imgproc.drawContours(sinCuadrados, contornos, i, new Scalar(0, 0, 0), -1);
             }
         }
+        // dilato los conectores para que se superpongan con los cuadrados
+        sinCuadrados = dilate(sinCuadrados);
+        sinCuadrados = dilate(sinCuadrados);
+        sinCuadrados = dilate(sinCuadrados);
       
+        // Imagen en la que se va a dibuja el resultado
         Mat conectores = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
-        Random rand = new Random();
-        Mat contorno = Mat.zeros(imagenCuadrados.size(), CvType.CV_8UC3);
-        Mat intersec = new Mat();
+        Mat contorno;
         contornos = detectarContornos(sinCuadrados);
+        Random rand = new Random();
+        Mat intersec = new Mat();
         ArrayList<MatOfPoint> contornos_intersec = new ArrayList<>();
         int r, g, b;
         for(int j = 0; j < contornos.size(); j ++){
+            //Dibujo el contorno relleno, para despues sacar la interseccion con los cuadrados
+            contorno = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
             Imgproc.drawContours(contorno, contornos, j, new Scalar(180, 255, 255), -1);
             Imgproc.cvtColor(contorno, contorno, Imgproc.COLOR_BGR2GRAY);
+            //Calculo la interseccion con los cuadrados (se dibujan en intersec)
             Core.bitwise_and(contorno, imagenCuadrados, intersec);
+            //Saco los contornos de las intersecciones para saber donde estan
             contornos_intersec = detectarContornos(intersec);
             if(contornos_intersec.size() > 1){
                 r = rand.nextInt(256);
@@ -280,7 +245,6 @@ public class Simeav {
                 Core.rectangle(conectores, c.getModuloDesde().getRectangulo().tl(), c.getModuloDesde().getRectangulo().br(), color, 3);
                 Core.rectangle(conectores, c.getModuloHasta().getRectangulo().tl(), c.getModuloHasta().getRectangulo().br(), color, 3);
             }
-            contorno = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
         }
         
 //        for(int i = 0; i < contornos.size(); i++){

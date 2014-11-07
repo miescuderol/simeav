@@ -78,6 +78,11 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="jPanel2">
+          <Properties>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[130, 0]"/>
+            </Property>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="left"/>
@@ -87,36 +92,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="botonBinaria" max="32767" attributes="0"/>
-                          <Component id="botonCuadrados" alignment="0" max="32767" attributes="0"/>
-                          <Component id="botonGrafo" alignment="0" max="32767" attributes="0"/>
-                          <Component id="botonSacarCuadrados" alignment="0" max="32767" attributes="0"/>
-                          <Component id="botonOriginal" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jScrollPane2" alignment="0" pref="111" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane2" min="-2" pref="107" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonOriginal" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonBinaria" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonCuadrados" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonSacarCuadrados" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="botonGrafo" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="240" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="jScrollPane2" alignment="0" pref="492" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -137,46 +118,6 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="botonBinaria">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Binaria"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonBinariaMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="botonCuadrados">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Cuadrados"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonCuadradosMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="botonGrafo">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Grafo"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonGrafoMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="botonSacarCuadrados">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="- Cuadrados"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonSacarCuadradosMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="botonOriginal">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Original"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonOriginalMouseClicked"/>
-              </Events>
-            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
