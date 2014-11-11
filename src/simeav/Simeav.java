@@ -51,10 +51,11 @@ public class Simeav extends Observable{
         imagenes = new ArrayList<>();
         System.out.println("archio " + selectedFile.getName());
         imagenes.add(new InfoImagen("Original", Highgui.imread(selectedFile.getAbsolutePath())));
-        imagenes.add(new InfoImagen("Binaria", calcularBinaria(imagenes.get(imagenes.size()-1).getImagen())));
-        imagenes.add(new InfoImagen("Cuadrados", detectarCuadrados(imagenes.get(imagenes.size()-1).getImagen())));
-        imagenes.add(new InfoImagen("Conectores", detectarConectores(imagenes.get(0).getImagen(), imagenes.get(imagenes.size()-1).getImagen())));
-        imagenes.add(new InfoImagen("Grafo", dibujarGrafo()));
+//        imagenes.add(new InfoImagen("Sin texto", eliminarTexto(imagenes.get(imagenes.size()-1).getImagen())));
+//        imagenes.add(new InfoImagen("Binaria", calcularBinaria(imagenes.get(imagenes.size()-1).getImagen())));
+//        imagenes.add(new InfoImagen("Cuadrados", detectarCuadrados(imagenes.get(imagenes.size()-1).getImagen())));
+//        imagenes.add(new InfoImagen("Conectores", detectarConectores(imagenes.get(0).getImagen(), imagenes.get(imagenes.size()-1).getImagen())));
+//        imagenes.add(new InfoImagen("Grafo", dibujarGrafo()));
         setChanged();
         notifyObservers();
     }
@@ -98,6 +99,33 @@ public class Simeav extends Observable{
         Imgproc.findContours(original.clone(), contornos, jerarquia, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         return contornos;
     }
+    
+    public Mat eliminarTexto(int lados){
+        Mat original = imagenes.get(0).getImagen().clone();
+        Mat sinTexto = Mat.zeros(imagenes.get(0).getImagen().size(), CvType.CV_8UC3);
+        Mat texto = Mat.zeros(imagenes.get(0).getImagen().size(), CvType.CV_8UC3);
+        Mat imGrises = new Mat();
+        Mat bw = new Mat();
+        Imgproc.cvtColor(original, imGrises, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.GaussianBlur(imGrises, bw, new Size(1,1), 0);
+        Imgproc.threshold(bw, bw, 200, 250, Imgproc.THRESH_BINARY_INV);
+        ArrayList<MatOfPoint> contornos = detectarContornos(bw);
+        for(int i = 0; i < contornos.size(); i++){
+            MatOfPoint2f contorno2f = new MatOfPoint2f();
+            contorno2f.fromList(contornos.get(i).toList());
+            float[] radius = new float[1];
+            Point centro = new Point();
+            Imgproc.minEnclosingCircle(contorno2f, centro, radius);
+            System.out.println("radio" + radius[0]);
+            double a = Imgproc.contourArea(contornos.get(i));
+            if(radius[0] <= lados){
+                Imgproc.drawContours(original, contornos, i, new Scalar(175, 180, 5), -1);
+                Imgproc.drawContours(texto, contornos, i, new Scalar(255, 255, 255), -1);
+            }
+        }
+        return original;
+    }
+    
 
     private Mat detectarCuadrados(Mat original) {
         Imgproc.blur(original, original, new Size(15,15));
@@ -198,6 +226,10 @@ public class Simeav extends Observable{
 
     private Mat detectarConectores(Mat original, Mat imagenCuadrados) {
         Mat sinCuadrados = borrarCuadrados(original, imagenCuadrados);
+        // dilato los conectores para que se superpongan con los cuadrados
+        sinCuadrados = dilate(sinCuadrados);
+        sinCuadrados = dilate(sinCuadrados);
+        sinCuadrados = dilate(sinCuadrados);
         //elimino puntos que pueden haber quedado de la eliminacion de cuadrados
         ArrayList<MatOfPoint> contornos = detectarContornos(sinCuadrados);
         for(int i = 0; i < contornos.size(); i++){
@@ -206,10 +238,6 @@ public class Simeav extends Observable{
                 Imgproc.drawContours(sinCuadrados, contornos, i, new Scalar(0, 0, 0), -1);
             }
         }
-        // dilato los conectores para que se superpongan con los cuadrados
-        sinCuadrados = dilate(sinCuadrados);
-        sinCuadrados = dilate(sinCuadrados);
-        sinCuadrados = dilate(sinCuadrados);
       
         // Imagen en la que se va a dibuja el resultado
         Mat conectores = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
@@ -217,6 +245,7 @@ public class Simeav extends Observable{
         contornos = detectarContornos(sinCuadrados);
         Random rand = new Random();
         Mat intersec = new Mat();
+
         ArrayList<MatOfPoint> contornos_intersec = new ArrayList<>();
         int r, g, b;
         for(int j = 0; j < contornos.size(); j ++){

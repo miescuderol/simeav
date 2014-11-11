@@ -6,10 +6,8 @@
 
 package simeav;
 
-import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,15 +15,11 @@ import java.util.Observable;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTree;
+import javax.swing.JSlider;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
@@ -116,6 +110,8 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         jScrollPane1 = new javax.swing.JScrollPane();
         panelVisualizador = new javax.swing.JPanel();
         imagen = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        sliderLados = new javax.swing.JSlider();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuItemAbrir = new javax.swing.JMenuItem();
@@ -137,7 +133,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
         );
 
         jSplitPane2.setLeftComponent(jPanel2);
@@ -162,6 +158,23 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         jScrollPane1.setViewportView(panelVisualizador);
 
         jSplitPane2.setRightComponent(jScrollPane1);
+
+        jToolBar1.setRollover(true);
+        jToolBar1.setMaximumSize(new java.awt.Dimension(32780, 55));
+        jToolBar1.setPreferredSize(new java.awt.Dimension(100, 45));
+
+        sliderLados.setMajorTickSpacing(10);
+        sliderLados.setMaximum(80);
+        sliderLados.setMinorTickSpacing(1);
+        sliderLados.setPaintLabels(true);
+        sliderLados.setPaintTicks(true);
+        sliderLados.setValue(0);
+        sliderLados.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderLadosStateChanged(evt);
+            }
+        });
+        jToolBar1.add(sliderLados);
 
         jMenu1.setText("Archivo");
 
@@ -196,10 +209,14 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane2)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane2)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSplitPane2))
         );
 
         pack();
@@ -222,10 +239,13 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         }
     }//GEN-LAST:event_menuItemGuardarActionPerformed
 
- 
-    
-    
-    
+    private void sliderLadosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderLadosStateChanged
+        JSlider slider = (JSlider)evt.getSource();
+        int lados = slider.getValue();
+        mostrar(modelo.eliminarTexto(lados));
+    }//GEN-LAST:event_sliderLadosStateChanged
+
+  
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -239,10 +259,12 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem menuItemAbrir;
     private javax.swing.JMenuItem menuItemGuardar;
     private javax.swing.JMenuItem menuItemSalir;
     private javax.swing.JPanel panelVisualizador;
+    private javax.swing.JSlider sliderLados;
     // End of variables declaration//GEN-END:variables
     // Elementos del arbolResultados
     private DefaultMutableTreeNode arResultado;
