@@ -29,7 +29,7 @@ public class Main {
             java.util.logging.Logger.getLogger(InterfazGrafica.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); 
+        System.loadLibrary("opencv_java249"); 
         /* Create and display the form */
         Simeav modelo = new Simeav();
         InterfazGrafica vista = new InterfazGrafica();

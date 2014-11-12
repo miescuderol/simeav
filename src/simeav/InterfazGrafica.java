@@ -112,6 +112,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         imagen = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         sliderLados = new javax.swing.JSlider();
+        botonProcesar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuItemAbrir = new javax.swing.JMenuItem();
@@ -160,7 +161,8 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         jSplitPane2.setRightComponent(jScrollPane1);
 
         jToolBar1.setRollover(true);
-        jToolBar1.setMaximumSize(new java.awt.Dimension(32780, 55));
+        jToolBar1.setMaximumSize(new java.awt.Dimension(32780, 60));
+        jToolBar1.setMinimumSize(new java.awt.Dimension(49, 60));
         jToolBar1.setPreferredSize(new java.awt.Dimension(100, 45));
 
         sliderLados.setMajorTickSpacing(10);
@@ -168,13 +170,26 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         sliderLados.setMinorTickSpacing(1);
         sliderLados.setPaintLabels(true);
         sliderLados.setPaintTicks(true);
-        sliderLados.setValue(0);
+        sliderLados.setValue(32);
+        sliderLados.setMaximumSize(new java.awt.Dimension(32767, 59));
+        sliderLados.setMinimumSize(new java.awt.Dimension(36, 59));
         sliderLados.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sliderLadosStateChanged(evt);
             }
         });
         jToolBar1.add(sliderLados);
+
+        botonProcesar.setText("Procesar");
+        botonProcesar.setFocusable(false);
+        botonProcesar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        botonProcesar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        botonProcesar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonProcesarMouseClicked(evt);
+            }
+        });
+        jToolBar1.add(botonProcesar);
 
         jMenu1.setText("Archivo");
 
@@ -227,8 +242,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         if(returnVal == JFileChooser.APPROVE_OPTION) {
            Mat im;
            modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
-//           im = modelo.getImagenOriginal();
-//           mostrar(im);
+           mostrar(modelo.eliminarTexto(sliderLados.getValue()));
         }
     }//GEN-LAST:event_menuItemAbrirActionPerformed
 
@@ -240,10 +254,16 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     }//GEN-LAST:event_menuItemGuardarActionPerformed
 
     private void sliderLadosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderLadosStateChanged
-        JSlider slider = (JSlider)evt.getSource();
-        int lados = slider.getValue();
-        mostrar(modelo.eliminarTexto(lados));
+        if (modelo.inicializado()){    
+            JSlider slider = (JSlider)evt.getSource();
+            int lados = slider.getValue();
+            mostrar(modelo.eliminarTexto(lados));
+        }
     }//GEN-LAST:event_sliderLadosStateChanged
+
+    private void botonProcesarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonProcesarMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botonProcesarMouseClicked
 
   
 
@@ -251,6 +271,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private DefaultMutableTreeNode rootArbolResultados;
     private javax.swing.JTree arbolResultados;
+    private javax.swing.JButton botonProcesar;
     private javax.swing.JLabel imagen;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

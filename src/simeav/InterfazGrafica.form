@@ -169,7 +169,10 @@
       <Properties>
         <Property name="rollover" type="boolean" value="true"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[32780, 55]"/>
+          <Dimension value="[32780, 60]"/>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[49, 60]"/>
         </Property>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[100, 45]"/>
@@ -185,10 +188,27 @@
             <Property name="minorTickSpacing" type="int" value="1"/>
             <Property name="paintLabels" type="boolean" value="true"/>
             <Property name="paintTicks" type="boolean" value="true"/>
-            <Property name="value" type="int" value="0"/>
+            <Property name="value" type="int" value="32"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[32767, 59]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[36, 59]"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="sliderLadosStateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="botonProcesar">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Procesar"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonProcesarMouseClicked"/>
           </Events>
         </Component>
       </SubComponents>

@@ -41,21 +41,23 @@ public class Simeav extends Observable{
     private Diagrama diagrama;
     private Map<Integer, Rect> rectangulos;
     private ArrayList<InfoImagen> imagenes;
+    private boolean inicializado;
     
     Simeav(){
         diagrama = new Diagrama();
+        inicializado = false;
     }
     
     void setImagenOriginal(File selectedFile) {
         diagrama = new Diagrama();
         imagenes = new ArrayList<>();
-        System.out.println("archio " + selectedFile.getName());
         imagenes.add(new InfoImagen("Original", Highgui.imread(selectedFile.getAbsolutePath())));
 //        imagenes.add(new InfoImagen("Sin texto", eliminarTexto(imagenes.get(imagenes.size()-1).getImagen())));
 //        imagenes.add(new InfoImagen("Binaria", calcularBinaria(imagenes.get(imagenes.size()-1).getImagen())));
 //        imagenes.add(new InfoImagen("Cuadrados", detectarCuadrados(imagenes.get(imagenes.size()-1).getImagen())));
 //        imagenes.add(new InfoImagen("Conectores", detectarConectores(imagenes.get(0).getImagen(), imagenes.get(imagenes.size()-1).getImagen())));
 //        imagenes.add(new InfoImagen("Grafo", dibujarGrafo()));
+        inicializado = true;
         setChanged();
         notifyObservers();
     }
@@ -72,7 +74,9 @@ public class Simeav extends Observable{
         }
     }
 
-
+    boolean inicializado(){
+        return inicializado;
+    }
     
     ArrayList<InfoImagen> getImagenes(){
         return imagenes;
@@ -116,10 +120,9 @@ public class Simeav extends Observable{
             float[] radius = new float[1];
             Point centro = new Point();
             Imgproc.minEnclosingCircle(contorno2f, centro, radius);
-            System.out.println("radio" + radius[0]);
             double a = Imgproc.contourArea(contornos.get(i));
             if(radius[0] <= lados){
-                Imgproc.drawContours(original, contornos, i, new Scalar(175, 180, 5), -1);
+                Imgproc.drawContours(original, contornos, i, getColorRandom(), -1);
                 Imgproc.drawContours(texto, contornos, i, new Scalar(255, 255, 255), -1);
             }
         }
@@ -243,7 +246,6 @@ public class Simeav extends Observable{
         Mat conectores = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
         Mat contorno;
         contornos = detectarContornos(sinCuadrados);
-        Random rand = new Random();
         Mat intersec = new Mat();
 
         ArrayList<MatOfPoint> contornos_intersec = new ArrayList<>();
@@ -258,10 +260,7 @@ public class Simeav extends Observable{
             //Saco los contornos de las intersecciones para saber donde estan
             contornos_intersec = detectarContornos(intersec);
             if(contornos_intersec.size() > 1){
-                r = rand.nextInt(256);
-                g = rand.nextInt(256);
-                b = rand.nextInt(256);
-                Scalar color = new Scalar(r,g,b);
+                Scalar color = getColorRandom();
                 for(int z = 0; z < contornos_intersec.size(); z++){
                     Imgproc.drawContours(conectores, contornos_intersec, z, color, -1);
                 }
@@ -337,5 +336,13 @@ public class Simeav extends Observable{
         Modulo m1 = (Modulo) modulos_conectados.get(0);
         Modulo m2 = (Modulo) modulos_conectados.get(1);
         diagrama.addConector(id_conector, m1, m2, extremos.get(0), extremos.get(1));   
+    }
+
+    private Scalar getColorRandom() {
+        Random rand = new Random();
+        int r = rand.nextInt(256);
+        int g = rand.nextInt(256);
+        int b = rand.nextInt(256);
+        return new Scalar(r,g,b);
     }
 }
