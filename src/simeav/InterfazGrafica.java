@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -47,20 +47,22 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
 
     @Override
     public void update(Observable o, Object arg) {
-        ArrayList<InfoImagen> imagenes = modelo.getImagenes();
-        for(int i = 0; i < imagenes.size(); i++){
-            InfoImagen imagen = imagenes.get(i);
+        Etapa[] etapas = Etapa.values();
+        HashMap<Etapa, Mat> imagenes = modelo.getImagenes();
+        for(int i = 0; i < etapas.length; i++){
             if(rootArbolResultados.getChildCount() <= i){
                 DefaultMutableTreeNode nodo;
-                nodo = new DefaultMutableTreeNode(imagen, false);
+                nodo = new DefaultMutableTreeNode(etapas[i], false);
                 rootArbolResultados.add(nodo);
             }
             else {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)rootArbolResultados.getChildAt(i);
-                node.setUserObject(imagen);
+                node.setUserObject(etapas[i]);
             }
         }
-        mostrar(((InfoImagen)((DefaultMutableTreeNode)rootArbolResultados.getChildAt(0)).getUserObject()).getImagen());
+        arbolResultados.setRootVisible(true);
+        arbolResultados.expandRow(0);
+        arbolResultados.setRootVisible(false);
     }    
     
     @Override
@@ -72,8 +74,8 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
 
         Object nodeInfo = node.getUserObject();
         if (node.isLeaf()) {
-            InfoImagen imagen = (InfoImagen)node.getUserObject();
-            mostrar(imagen.getImagen());
+            Mat imagen = modelo.getImagenes().get((Etapa)nodeInfo);
+            mostrar(imagen);
         }
     }
 
@@ -111,7 +113,10 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         panelVisualizador = new javax.swing.JPanel();
         imagen = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
-        sliderLados = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
+        sliderUmbral = new javax.swing.JSlider();
+        jLabel2 = new javax.swing.JLabel();
+        sliderRadio = new javax.swing.JSlider();
         botonProcesar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -124,6 +129,8 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
 
         jPanel2.setMinimumSize(new java.awt.Dimension(130, 0));
 
+        arbolResultados.setDoubleBuffered(true);
+        arbolResultados.setRootVisible(false);
         jScrollPane2.setViewportView(arbolResultados);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -134,10 +141,16 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE)
         );
 
         jSplitPane2.setLeftComponent(jPanel2);
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(800, 600));
+
+        panelVisualizador.setAutoscrolls(true);
+        panelVisualizador.setMinimumSize(new java.awt.Dimension(800, 600));
+        panelVisualizador.setPreferredSize(new java.awt.Dimension(800, 600));
 
         imagen.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         imagen.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -149,7 +162,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
             panelVisualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelVisualizadorLayout.createSequentialGroup()
                 .addComponent(imagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 759, Short.MAX_VALUE))
+                .addGap(0, 840, Short.MAX_VALUE))
         );
         panelVisualizadorLayout.setVerticalGroup(
             panelVisualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,27 +173,46 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
 
         jSplitPane2.setRightComponent(jScrollPane1);
 
-        jToolBar1.setRollover(true);
-        jToolBar1.setMaximumSize(new java.awt.Dimension(32780, 60));
-        jToolBar1.setMinimumSize(new java.awt.Dimension(49, 60));
-        jToolBar1.setPreferredSize(new java.awt.Dimension(100, 45));
+        jToolBar1.setMaximumSize(new java.awt.Dimension(32780, 80));
+        jToolBar1.setMinimumSize(new java.awt.Dimension(49, 80));
+        jToolBar1.setPreferredSize(new java.awt.Dimension(100, 80));
 
-        sliderLados.setMajorTickSpacing(10);
-        sliderLados.setMaximum(80);
-        sliderLados.setMinorTickSpacing(1);
-        sliderLados.setPaintLabels(true);
-        sliderLados.setPaintTicks(true);
-        sliderLados.setValue(32);
-        sliderLados.setMaximumSize(new java.awt.Dimension(32767, 59));
-        sliderLados.setMinimumSize(new java.awt.Dimension(36, 59));
-        sliderLados.addChangeListener(new javax.swing.event.ChangeListener() {
+        jLabel1.setText("Umbral");
+        jToolBar1.add(jLabel1);
+
+        sliderUmbral.setMajorTickSpacing(25);
+        sliderUmbral.setMaximum(255);
+        sliderUmbral.setMinorTickSpacing(5);
+        sliderUmbral.setPaintLabels(true);
+        sliderUmbral.setPaintTicks(true);
+        sliderUmbral.setValue(0);
+        sliderUmbral.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                sliderLadosStateChanged(evt);
+                sliderUmbralStateChanged(evt);
             }
         });
-        jToolBar1.add(sliderLados);
+        jToolBar1.add(sliderUmbral);
+
+        jLabel2.setText("Radio");
+        jToolBar1.add(jLabel2);
+
+        sliderRadio.setMajorTickSpacing(10);
+        sliderRadio.setMaximum(80);
+        sliderRadio.setMinorTickSpacing(1);
+        sliderRadio.setPaintLabels(true);
+        sliderRadio.setPaintTicks(true);
+        sliderRadio.setValue(32);
+        sliderRadio.setMaximumSize(new java.awt.Dimension(32767, 59));
+        sliderRadio.setMinimumSize(new java.awt.Dimension(36, 59));
+        sliderRadio.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderRadioStateChanged(evt);
+            }
+        });
+        jToolBar1.add(sliderRadio);
 
         botonProcesar.setText("Procesar");
+        botonProcesar.setEnabled(false);
         botonProcesar.setFocusable(false);
         botonProcesar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         botonProcesar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -223,13 +255,13 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane2)
+            .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane2))
         );
@@ -242,7 +274,13 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         if(returnVal == JFileChooser.APPROVE_OPTION) {
            Mat im;
            modelo.setImagenOriginal(selectorArchivos.getSelectedFile());
-           mostrar(modelo.eliminarTexto(sliderLados.getValue()));
+           mostrar(modelo.preprocesar(sliderUmbral.getValue()));
+           umbralada = false;
+           separada = false;
+           botonProcesar.setEnabled(false);
+           arbolResultados.setRootVisible(true);
+           arbolResultados.collapseRow(0);
+           arbolResultados.setRootVisible(false);
         }
     }//GEN-LAST:event_menuItemAbrirActionPerformed
 
@@ -253,17 +291,33 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
         }
     }//GEN-LAST:event_menuItemGuardarActionPerformed
 
-    private void sliderLadosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderLadosStateChanged
+    private void sliderRadioStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderRadioStateChanged
         if (modelo.inicializado()){    
             JSlider slider = (JSlider)evt.getSource();
-            int lados = slider.getValue();
-            mostrar(modelo.eliminarTexto(lados));
+            int radio = slider.getValue();
+            mostrar(modelo.separarTexto(radio));
+            if (this.umbralada){
+                botonProcesar.setEnabled(true);
+            }
+            this.separada = true;
         }
-    }//GEN-LAST:event_sliderLadosStateChanged
+    }//GEN-LAST:event_sliderRadioStateChanged
 
     private void botonProcesarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonProcesarMouseClicked
-        // TODO add your handling code here:
+        modelo.procesarModulos();
     }//GEN-LAST:event_botonProcesarMouseClicked
+
+    private void sliderUmbralStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderUmbralStateChanged
+        if (modelo.inicializado()){    
+            JSlider slider = (JSlider)evt.getSource();
+            int umbral = slider.getValue();
+            mostrar(modelo.preprocesar(umbral));
+            if(this.separada){
+                botonProcesar.setEnabled(true);
+            }
+            this.umbralada = true;
+        }
+    }//GEN-LAST:event_sliderUmbralStateChanged
 
   
 
@@ -273,6 +327,8 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     private javax.swing.JTree arbolResultados;
     private javax.swing.JButton botonProcesar;
     private javax.swing.JLabel imagen;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -285,12 +341,14 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     private javax.swing.JMenuItem menuItemGuardar;
     private javax.swing.JMenuItem menuItemSalir;
     private javax.swing.JPanel panelVisualizador;
-    private javax.swing.JSlider sliderLados;
+    private javax.swing.JSlider sliderRadio;
+    private javax.swing.JSlider sliderUmbral;
     // End of variables declaration//GEN-END:variables
     // Elementos del arbolResultados
-    private DefaultMutableTreeNode arResultado;
     private JFileChooser selectorArchivos = new JFileChooser();
     private Simeav modelo = new Simeav();
+    private boolean umbralada = false;
+    private boolean separada = false;
 
 
 }

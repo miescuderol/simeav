@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opencv.core.Core;
@@ -30,6 +29,10 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
+import simeav.filtros.Preprocesador;
+import simeav.filtros.SeparadorTexto;
+import simeav.filtros.instanciaciones.PreprocesadorEstandar;
+import simeav.filtros.instanciaciones.SeparadorTextoEstandar;
 
 
 /**
@@ -40,24 +43,36 @@ public class Simeav extends Observable{
  
     private Diagrama diagrama;
     private Map<Integer, Rect> rectangulos;
-    private ArrayList<InfoImagen> imagenes;
+    private HashMap<Etapa, Mat> imagenes;
     private boolean inicializado;
+    private SeparadorTexto sepTexto = new SeparadorTextoEstandar();
+    private Preprocesador preprocesador = new PreprocesadorEstandar();
+    private Mat extremos;
+
     
     Simeav(){
         diagrama = new Diagrama();
         inicializado = false;
+        
     }
     
     void setImagenOriginal(File selectedFile) {
         diagrama = new Diagrama();
-        imagenes = new ArrayList<>();
-        imagenes.add(new InfoImagen("Original", Highgui.imread(selectedFile.getAbsolutePath())));
-//        imagenes.add(new InfoImagen("Sin texto", eliminarTexto(imagenes.get(imagenes.size()-1).getImagen())));
-//        imagenes.add(new InfoImagen("Binaria", calcularBinaria(imagenes.get(imagenes.size()-1).getImagen())));
-//        imagenes.add(new InfoImagen("Cuadrados", detectarCuadrados(imagenes.get(imagenes.size()-1).getImagen())));
-//        imagenes.add(new InfoImagen("Conectores", detectarConectores(imagenes.get(0).getImagen(), imagenes.get(imagenes.size()-1).getImagen())));
-//        imagenes.add(new InfoImagen("Grafo", dibujarGrafo()));
+        imagenes = new HashMap<>();
+        imagenes.put(Etapa.ORIGINAL, Highgui.imread(selectedFile.getAbsolutePath()));
+//        imagenes.put(Etapa.PREPROCESADA, new InfoImagen("Preprocesada",preprocesador.preprocesar(imagenes.get(Etapa.ORIGINAL).getImagen())));
         inicializado = true;
+    }
+    
+    
+    void procesarModulos(){
+//        imagenes.put(Etapa.TEXTO, borrarMascara(imagenes.get(Etapa.PREPROCESADA), sepTexto.getImagenTexto()));
+//        imagenes.put(Etapa.SIN_TEXTO, sepTexto.getImagenSinTexto());
+        imagenes.put(Etapa.BINARIZADA, calcularBinaria(imagenes.get(Etapa.SIN_TEXTO)));
+        imagenes.put(Etapa.MODULOS, detectarCuadrados(imagenes.get(Etapa.BINARIZADA)));
+        imagenes.put(Etapa.CONECTORES, detectarConectores(imagenes.get(Etapa.SIN_TEXTO), imagenes.get(Etapa.MODULOS)));
+        imagenes.put(Etapa.EXTREMOS, Utils.borrarMascara(imagenes.get(Etapa.SIN_TEXTO), this.extremos));
+        imagenes.put(Etapa.GRAFO, dibujarGrafo());
         setChanged();
         notifyObservers();
     }
@@ -78,12 +93,18 @@ public class Simeav extends Observable{
         return inicializado;
     }
     
-    ArrayList<InfoImagen> getImagenes(){
+    HashMap<Etapa, Mat> getImagenes(){
         return imagenes;
     }
     
+    Mat preprocesar(int umbral){
+        imagenes.put(Etapa.PREPROCESADA, preprocesador.preprocesar(imagenes.get(Etapa.ORIGINAL), umbral));
+        return imagenes.get(Etapa.PREPROCESADA);
+    }
+    
+    
     Mat dibujarGrafo(){
-        Mat grafo = Mat.zeros(imagenes.get(0).getImagen().size(), CvType.CV_8UC3);
+        Mat grafo = Mat.zeros(imagenes.get(Etapa.PREPROCESADA).size(), CvType.CV_8UC3);
         ArrayList<Modulo> modulos = diagrama.getModulos();
         for(int i = 0; i < modulos.size(); i++){
             Rect rect = modulos.get(i).getRectangulo();
@@ -96,37 +117,12 @@ public class Simeav extends Observable{
         }
         return grafo;
     }
-    
-    private ArrayList<MatOfPoint> detectarContornos(Mat original) {
-        Mat jerarquia = new Mat();
-        ArrayList<MatOfPoint> contornos = new ArrayList<>();
-        Imgproc.findContours(original.clone(), contornos, jerarquia, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        return contornos;
-    }
-    
-    public Mat eliminarTexto(int lados){
-        Mat original = imagenes.get(0).getImagen().clone();
-        Mat sinTexto = Mat.zeros(imagenes.get(0).getImagen().size(), CvType.CV_8UC3);
-        Mat texto = Mat.zeros(imagenes.get(0).getImagen().size(), CvType.CV_8UC3);
-        Mat imGrises = new Mat();
-        Mat bw = new Mat();
-        Imgproc.cvtColor(original, imGrises, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.GaussianBlur(imGrises, bw, new Size(1,1), 0);
-        Imgproc.threshold(bw, bw, 200, 250, Imgproc.THRESH_BINARY_INV);
-        ArrayList<MatOfPoint> contornos = detectarContornos(bw);
-        for(int i = 0; i < contornos.size(); i++){
-            MatOfPoint2f contorno2f = new MatOfPoint2f();
-            contorno2f.fromList(contornos.get(i).toList());
-            float[] radius = new float[1];
-            Point centro = new Point();
-            Imgproc.minEnclosingCircle(contorno2f, centro, radius);
-            double a = Imgproc.contourArea(contornos.get(i));
-            if(radius[0] <= lados){
-                Imgproc.drawContours(original, contornos, i, getColorRandom(), -1);
-                Imgproc.drawContours(texto, contornos, i, new Scalar(255, 255, 255), -1);
-            }
-        }
-        return original;
+
+    public Mat separarTexto(int lados){
+        sepTexto.separarTexto(imagenes.get(Etapa.PREPROCESADA), lados);
+        imagenes.put(Etapa.TEXTO, Utils.borrarMascara(imagenes.get(Etapa.PREPROCESADA), sepTexto.getImagenTexto()));
+        imagenes.put(Etapa.SIN_TEXTO, sepTexto.getImagenSinTexto());
+        return imagenes.get(Etapa.SIN_TEXTO);
     }
     
 
@@ -139,7 +135,8 @@ public class Simeav extends Observable{
         ArrayList<MatOfPoint> cp = new ArrayList<>(contornos.size());
         rectangulos = new HashMap<>();
         Integer id_cuadrado = 0;
-        for (int i = 0; i < contornos.size(); i++) {
+        Mat resultado = Mat.zeros(original.size(), CvType.CV_8U);
+        for (int i = contornos.size()-1; i >= 0; i--) {
             if(jerarquia.get(0, i)[3] > -1){
                 MatOfPoint2f contorno2f = new MatOfPoint2f();
                 contorno2f.fromList(contornos.get(i).toList());
@@ -149,19 +146,14 @@ public class Simeav extends Observable{
                 int lados = cp.get(cp.size()-1).height();
                 if((4 <= lados) && lados < 12){
                     rectangulos.put(id_cuadrado, Imgproc.boundingRect(new MatOfPoint(c.toArray()))); 
+                    Point tl = new Point(rectangulos.get(id_cuadrado).tl().x - 20, rectangulos.get(id_cuadrado).tl().y - 20);
+                    Point br = new Point(rectangulos.get(id_cuadrado).br().x + 20, rectangulos.get(id_cuadrado).br().y + 20);
+                    Core.rectangle(resultado, tl, br, new Scalar(255, 255, 255), -1);
+                    diagrama.addModulo(i, new Rect(tl, br));
+                    Imgproc.drawContours(resultado, contornos, i, new Scalar(0, 0, 0), -1);
                     id_cuadrado++;
                 } 
             }
-        }
-        Mat resultado = Mat.zeros(original.size(), CvType.CV_8U);
-        for(int i = 0; i < rectangulos.size(); i++){
-            Scalar color = new Scalar(180, 170, 5);
-            Scalar blanco = new Scalar(255,255,255);
-//            Imgproc.drawContours(resultado, cp, i, color, 1, 8, jerarquia, 0, new Point());
-            Point tl = new Point(rectangulos.get(i).tl().x - 20, rectangulos.get(i).tl().y - 20);
-            Point br = new Point(rectangulos.get(i).br().x + 20, rectangulos.get(i).br().y + 20);
-            diagrama.addModulo(i, new Rect(tl, br));
-            Core.rectangle(resultado, tl, br, blanco, -1, 8, 0);
         }
         return resultado;
     }
@@ -206,6 +198,17 @@ public class Simeav extends Observable{
 //        dilate();
     }
     
+    private Mat calcularBinaria2(Mat original){
+        Mat imGrises = new Mat();
+        Mat bw = new Mat();
+        Imgproc.cvtColor(original, imGrises, Imgproc.COLOR_BGR2GRAY);
+//        Imgproc.Canny(imGrises, bw, 100, 150, 5, true);
+        Imgproc.GaussianBlur(imGrises, bw, new Size(1,1), 0);
+        Imgproc.threshold(bw, bw, 100, 250, Imgproc.THRESH_BINARY);
+        return bw;
+//        dilate();
+    }
+    
     private Mat erode(Mat original){
         Mat destino = new Mat();
         Mat kernel = Imgproc.getStructuringElement(1, new Size(3,3));
@@ -220,21 +223,16 @@ public class Simeav extends Observable{
         return destino;
     }
 
-    private Mat borrarCuadrados(Mat imagenOriginal, Mat imagenCuadrados) {
-        Mat imGrises = new Mat();
-        Imgproc.cvtColor(imagenOriginal, imGrises, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.threshold(imGrises, imGrises, 200, 250, Imgproc.THRESH_BINARY_INV);
-        return imGrises.setTo(new Scalar(0, 0, 0), imagenCuadrados);
-    }
+
 
     private Mat detectarConectores(Mat original, Mat imagenCuadrados) {
-        Mat sinCuadrados = borrarCuadrados(original, imagenCuadrados);
+        Mat sinCuadrados = Utils.borrarMascara(original, imagenCuadrados);
         // dilato los conectores para que se superpongan con los cuadrados
         sinCuadrados = dilate(sinCuadrados);
         sinCuadrados = dilate(sinCuadrados);
         sinCuadrados = dilate(sinCuadrados);
         //elimino puntos que pueden haber quedado de la eliminacion de cuadrados
-        ArrayList<MatOfPoint> contornos = detectarContornos(sinCuadrados);
+        ArrayList<MatOfPoint> contornos = Utils.detectarContornos(sinCuadrados);
         for(int i = 0; i < contornos.size(); i++){
             double area = Imgproc.contourArea(contornos.get(i));
             if(area <= 50){
@@ -242,15 +240,16 @@ public class Simeav extends Observable{
             }
         }
       
+        this.extremos = Mat.zeros(sinCuadrados.size(), CvType.CV_8U);
         // Imagen en la que se va a dibuja el resultado
         Mat conectores = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
         Mat contorno;
-        contornos = detectarContornos(sinCuadrados);
+        contornos = Utils.detectarContornos(sinCuadrados);
         Mat intersec = new Mat();
 
         ArrayList<MatOfPoint> contornos_intersec = new ArrayList<>();
         int r, g, b;
-        for(int j = 0; j < contornos.size(); j ++){
+        for(int j = contornos.size() - 1; j >= 0; j --){
             //Dibujo el contorno relleno, para despues sacar la interseccion con los cuadrados
             contorno = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
             Imgproc.drawContours(contorno, contornos, j, new Scalar(180, 255, 255), -1);
@@ -258,9 +257,9 @@ public class Simeav extends Observable{
             //Calculo la interseccion con los cuadrados (se dibujan en intersec)
             Core.bitwise_and(contorno, imagenCuadrados, intersec);
             //Saco los contornos de las intersecciones para saber donde estan
-            contornos_intersec = detectarContornos(intersec);
+            contornos_intersec = Utils.detectarContornos(intersec);
             if(contornos_intersec.size() > 1){
-                Scalar color = getColorRandom();
+                Scalar color = Utils.getColorRandom();
                 for(int z = 0; z < contornos_intersec.size(); z++){
                     Imgproc.drawContours(conectores, contornos_intersec, z, color, -1);
                 }
@@ -272,12 +271,14 @@ public class Simeav extends Observable{
                 Conector c = diagrama.getConector(j);
                 Core.rectangle(conectores, c.getModuloDesde().getRectangulo().tl(), c.getModuloDesde().getRectangulo().br(), color, 3);
                 Core.rectangle(conectores, c.getModuloHasta().getRectangulo().tl(), c.getModuloHasta().getRectangulo().br(), color, 3);
+                Point tl_desde = new Point(c.getDesde().x - 20, c.getDesde().y - 20);
+                Point br_desde = new Point(c.getDesde().x + 20, c.getDesde().y + 20);
+                Point tl_hasta = new Point(c.getHasta().x - 20, c.getHasta().y - 20);
+                Point br_hasta = new Point(c.getHasta().x + 20, c.getHasta().y + 20);
+                Core.rectangle(this.extremos, tl_desde, br_desde, new Scalar(255, 255, 255), -1);
+                Core.rectangle(this.extremos, tl_hasta, br_hasta, new Scalar(255, 255, 255), -1);
             }
         }
-        
-//        for(int i = 0; i < contornos.size(); i++){
-//            Imgproc.drawContours(conectores, contornos, i, new Scalar(256, 256, 256));
-//        }
         return conectores;
     }
 
@@ -300,7 +301,7 @@ public class Simeav extends Observable{
         for(int i = 0; i < extremos.size(); i++){
             for(int j = 0; j < modulos.size(); j++){
                 Rect rectangulo = modulos.get(j).getRectangulo();
-                if(extremos.get(i).inside(rectangulo)){
+                if(Utils.conecta(rectangulo, extremos.get(i))){
                     modulos_conectados.add(modulos.get(j));
                 }
             }
@@ -332,17 +333,13 @@ public class Simeav extends Observable{
                     k++;
                 }
             }
+        }  
+        i = modulos_conectados.size();
+        if(i >= 2){
+            Modulo m1 = (Modulo) modulos_conectados.get(0);
+            Modulo m2 = (Modulo) modulos_conectados.get(1);
+            diagrama.addConector(id_conector, m1, m2, extremos.get(0), extremos.get(1)); 
         }
-        Modulo m1 = (Modulo) modulos_conectados.get(0);
-        Modulo m2 = (Modulo) modulos_conectados.get(1);
-        diagrama.addConector(id_conector, m1, m2, extremos.get(0), extremos.get(1));   
     }
 
-    private Scalar getColorRandom() {
-        Random rand = new Random();
-        int r = rand.nextInt(256);
-        int g = rand.nextInt(256);
-        int b = rand.nextInt(256);
-        return new Scalar(r,g,b);
-    }
 }
