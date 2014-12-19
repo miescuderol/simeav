@@ -13,10 +13,16 @@ import simeav.Diagrama;
  * @author Nacha
  */
 public abstract class DetectorConectores {
+    
+    protected Mat extremos;
+    
     /*
         Detecta los conectores entre modulos de la imagen original.
         mascaraModulos determina en donde se encuntran los modulos.
         Agrega los conectores detectados al diagrama.
     */
     public abstract Mat detectarConectores(Mat original, Mat mascaraModulos, Diagrama diagrama);
+    public Mat getExtremos(){
+        return extremos;
+    }
 }

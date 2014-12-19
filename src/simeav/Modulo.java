@@ -19,7 +19,7 @@ import org.opencv.core.Rect;
  *
  * @author Nacha
  */
-class Modulo {
+public class Modulo {
     private Integer id;
     private String nombre;
     private Rect rectangulo;

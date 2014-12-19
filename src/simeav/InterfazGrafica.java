@@ -304,7 +304,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     }//GEN-LAST:event_sliderRadioStateChanged
 
     private void botonProcesarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonProcesarMouseClicked
-        modelo.procesarModulos();
+        modelo.procesar();
     }//GEN-LAST:event_botonProcesarMouseClicked
 
     private void sliderUmbralStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderUmbralStateChanged
