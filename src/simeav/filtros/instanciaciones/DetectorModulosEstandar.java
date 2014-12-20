@@ -52,7 +52,7 @@ public class DetectorModulosEstandar extends DetectorModulos{
                     Point tl = new Point(rectangulos.get(id_cuadrado).tl().x - 20, rectangulos.get(id_cuadrado).tl().y - 20);
                     Point br = new Point(rectangulos.get(id_cuadrado).br().x + 20, rectangulos.get(id_cuadrado).br().y + 20);
                     Core.rectangle(resultado, tl, br, new Scalar(255, 255, 255), -1);
-                    diagrama.addModulo(i, new Rect(tl, br));
+                    diagrama.addModulo(id_cuadrado, new Rect(tl, br));
                     Imgproc.drawContours(resultado, contornos, i, new Scalar(0, 0, 0), -1);
                     id_cuadrado++;
                 } 

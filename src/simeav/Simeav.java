@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -93,10 +94,22 @@ public class Simeav extends Observable{
         for (Modulo modulo : modulos) {
             Rect rect = modulo.getRectangulo();
             Core.rectangle(grafo, rect.tl(), rect.br(), new Scalar(182,170,5), 3);
+            Core.putText(grafo, modulo.getNombre(), new Point(rect.tl().x + 20, rect.tl().y + 20), Core.FONT_HERSHEY_PLAIN, 1, new Scalar(175, 180, 5), 2);
         }
         ArrayList<Conector> conectores = diagrama.getConectores();
         for (Conector c : conectores) {
             Core.line(grafo, c.getDesde(), c.getHasta(), new Scalar(180,170, 5), 2);
+            String tipo = c.getTipo();
+            switch (tipo) {
+                case "Usa":
+                    Core.circle(grafo, c.getHasta(), 6, new Scalar(0, 0, 255), -1);
+                    break;
+                case "Agregacion":
+                    Core.circle(grafo, c.getHasta(), 6, new Scalar(255, 255, 0), -1);
+                    break;
+                case "Extension":
+                    Core.circle(grafo, c.getHasta(), 6, new Scalar(255, 0, 0), -1);
+            }
         }
         return grafo;
     }

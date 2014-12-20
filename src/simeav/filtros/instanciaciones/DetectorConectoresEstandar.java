@@ -47,7 +47,7 @@ public class DetectorConectoresEstandar extends DetectorConectores{
       
         this.extremos = original.clone();
         Mat mascara;
-        String tipo_extremo;
+        String tipo_extremo1, tipo_extremo2;
         // Imagen en la que se va a dibuja el resultado
         Mat conectores = Mat.zeros(sinCuadrados.size(), CvType.CV_8UC3);
         Mat contorno;
@@ -85,12 +85,29 @@ public class DetectorConectoresEstandar extends DetectorConectores{
                 Point br_hasta = new Point(c.getHasta().x + 20, c.getHasta().y + 20);
                 mascara = new Mat(sinCuadrados.size(), CvType.CV_8U, new Scalar(255, 255, 255));
                 Core.rectangle(mascara, tl_desde, br_desde, new Scalar(0, 0, 0), -1);
-                tipo_extremo = clasificarExtremo(Utils.borrarMascara(original, mascara));
+                tipo_extremo1 = clasificarExtremo(Utils.borrarMascara(original, mascara));
                 
                 mascara = new Mat(sinCuadrados.size(), CvType.CV_8U, new Scalar(255, 255, 255));
                 Core.rectangle(mascara, tl_hasta, br_hasta, new Scalar(0, 0, 0), -1);
-                tipo_extremo = clasificarExtremo(Utils.borrarMascara(original, mascara));
-                
+                tipo_extremo2 = clasificarExtremo(Utils.borrarMascara(original, mascara));
+                if (!tipo_extremo1.equals(tipo_extremo2)){
+                    if (tipo_extremo1.equals("Normal"))
+                        c.setTipo(tipo_extremo2);
+                    else if (tipo_extremo2.equals("Normal")){
+                        Modulo aux = c.getModuloDesde();
+                        c.setDesde(c.getModuloHasta());
+                        c.setHacia(aux);
+                        Point p_aux = c.getDesde();
+                        c.setDesde(c.getHasta());
+                        c.setHasta(p_aux);
+                        c.setTipo(tipo_extremo1);
+                    }
+                    else {
+                        c.setTipo("Indeterminado");
+                    }
+                } else {
+                    c.setTipo("Indeterminado");
+                }
             }
         }
         return conectores;
@@ -146,7 +163,7 @@ public class DetectorConectoresEstandar extends DetectorConectores{
     }
 
     private String clasificarExtremo(Mat extremo) {
-        String tipo_extremo = "normal";
+        String tipo_extremo = "Normal";
         extremo = Utils.dilate(extremo);
         extremo = Utils.dilate(extremo);
         extremo = Utils.dilate(extremo);
@@ -161,15 +178,15 @@ public class DetectorConectoresEstandar extends DetectorConectores{
             Imgproc.drawContours(extremos, contornos, 0, new Scalar(0, 255, 0), 2);
         }
         else if (area <= 1400){
-            tipo_extremo = "usa";
+            tipo_extremo = "Usa";
             Imgproc.drawContours(extremos, contornos, 0, new Scalar(0, 0, 255), 3);
         }
         else if (area <= 1600){
-            tipo_extremo = "extension";
+            tipo_extremo = "Extension";
             Imgproc.drawContours(extremos, contornos, 0, new Scalar(255, 0, 0), 3);
         }
         else {
-            tipo_extremo = "agregacion";
+            tipo_extremo = "Agregacion";
             Imgproc.drawContours(extremos, contornos, 0, new Scalar(255, 255, 0), 3);
         }
             

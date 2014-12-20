@@ -25,7 +25,9 @@ public class Diagrama {
     }
     
     public void addModulo(Integer id, Rect rectangulo){
-        modulos.add(new Modulo(id, rectangulo));
+        Modulo m = new Modulo(id, rectangulo);
+        m.setNombre("Modulo " + id);
+        modulos.add(m);
     }
     
     public Modulo getModulo(Integer id){
