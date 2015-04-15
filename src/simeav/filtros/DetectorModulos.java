@@ -6,7 +6,7 @@
 package simeav.filtros;
 
 import org.opencv.core.Mat;
-import simeav.Diagrama;
+import simeav.grafo.Diagrama;
 
 /**
  *

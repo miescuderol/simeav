@@ -31,7 +31,7 @@ public class Main {
         //</editor-fold>
         System.loadLibrary("opencv_java249"); 
         /* Create and display the form */
-        Simeav modelo = new Simeav();
+        Modelo modelo = new Modelo();
         InterfazGrafica vista = new InterfazGrafica();
         vista.inicializar(modelo);
         java.awt.EventQueue.invokeLater(() -> {

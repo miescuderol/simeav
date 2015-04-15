@@ -36,7 +36,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     public InterfazGrafica() {
     }
     
-    public void inicializar(Simeav modelo){
+    public void inicializar(Modelo modelo){
         this.modelo = modelo;
         this.modelo.addObserver(this);
         initComponents();
@@ -402,7 +402,7 @@ public class InterfazGrafica extends javax.swing.JFrame implements java.util.Obs
     // End of variables declaration//GEN-END:variables
     // Elementos del arbolResultados
     private JFileChooser selectorArchivos = new JFileChooser();
-    private Simeav modelo = new Simeav();
+    private Modelo modelo = new Modelo();
     private boolean umbralada = false;
     private boolean separada = false;
 
